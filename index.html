@@ -99,22 +99,26 @@ async function storeBackupHandle(handle){
     tx.objectStore('handles').put(handle,'backup');
   }catch(e){}
 }
+function supportsFileSystemBackup(){ return !!window.showSaveFilePicker; }
 async function writeBackupFile(){
+  if(!supportsFileSystemBackup()) return false;
   const handle=await getBackupHandle();
-  if(!handle) return;
+  if(!handle) return false;
   try{
     const perm=await handle.queryPermission({mode:'readwrite'});
     if(perm!=='granted'){
       const req=await handle.requestPermission({mode:'readwrite'});
-      if(req!=='granted') return;
+      if(req!=='granted') return false;
     }
     const writable=await handle.createWritable();
     await writable.write(JSON.stringify(db,null,2));
     await writable.close();
-  }catch(e){}
+    return true;
+  }catch(e){ return false; }
 }
 let backupTimer=null;
 function autoBackup(){
+  if(!supportsFileSystemBackup()) return;
   clearTimeout(backupTimer);
   backupTimer=setTimeout(writeBackupFile,150);
 }
@@ -341,8 +345,9 @@ function saveNote(e){e.preventDefault();let o=Object.fromEntries(new FormData(e.
 function toggleNote(id){let x=db.notes.find(a=>a.id===id);if(x)x.done=!x.done;save();render()}
 function del(type,id){if(!confirm('Bu məlumatı silmək istəyirsiniz?'))return;db[type]=db[type].filter(x=>x.id!==id);save();render()}
 async function chooseBackupFile(){
-  if(!window.showSaveFilePicker){
-    alert('Bu funksiya üçün Chrome və ya Microsoft Edge istifadə edin.');
+  if(!supportsFileSystemBackup()){
+    exportData();
+    alert('iPhone üçün backup hazırlandı. Faylı Files tətbiqində saxlaya bilərsiniz.');
     return;
   }
   try{
@@ -357,17 +362,18 @@ async function chooseBackupFile(){
   }catch(e){}
 }
 function exportData(){
-  if(window.showSaveFilePicker){chooseBackupFile();return;}
-  let a=document.createElement('a');
+  const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));
   a.download='islerim-xerclerim-backup.json';
-  a.click();
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
 }
 function importData(){document.getElementById('file').click()}
 async function updateBackupStatus(){
   const el=document.getElementById('backupStatus');
   if(!el)return;
   const h=await getBackupHandle();
+  if(!supportsFileSystemBackup()){ el.textContent='📱 iPhone rejimi: məlumatlar telefonda saxlanılır. Backup üçün “Backup çıxar” düyməsindən istifadə edin.'; return; }
   el.textContent=h?'🟢 Avtomatik backup aktivdir — seçilmiş fayl hər əməliyyatdan sonra yenilənir.':'🔴 Avtomatik backup faylı seçilməyib.';
 }
 function readBackup(e){let file=e.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();render();alert('Backup bərpa edildi.')}catch{alert('Backup faylı düzgün deyil.')}};r.readAsText(file)}
