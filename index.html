@@ -2,15 +2,13 @@
 <html lang="az">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#111827">
-<meta name="description" content="İşlər, xərclər, gəlirlər, borclar və şəxsi maliyyəni idarə et.">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icons/icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="İşlərim">
-<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="İşlərim" >
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
 <title>İşlərim və Xərclərim</title>
 <style>
 :root{--bg:#f5f7fb;--card:#ffffff;--text:#17202a;--muted:#718096;--line:#e7ebf2;--primary:#4f46e5;--primary2:#7c3aed;--danger:#ef4444;--green:#10b981;--orange:#f59e0b;--shadow:0 10px 30px rgba(31,41,55,.07)}
@@ -24,9 +22,10 @@ button,.btn{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-we
 .panel{background:rgba(255,255,255,.94);border:1px solid rgba(226,232,240,.95);border-radius:18px;padding:20px;margin-bottom:18px;box-shadow:var(--shadow)}.panel h2{font-size:18px;margin:0 0 15px;letter-spacing:-.2px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;font-size:14px}th{color:var(--muted);font-size:12px}.badge{padding:6px 10px;border-radius:999px;font-size:12px;background:#eef2ff;color:#4338ca;font-weight:700}.empty{padding:30px;text-align:center;color:var(--muted)}
 .formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:600}.field input,.field select,.field textarea{padding:12px;border:1px solid #d7dce5;border-radius:10px;font:inherit;background:white;outline:none;transition:.2s}.field input:focus,.field select:focus,.field textarea:focus{border-color:#818cf8;box-shadow:0 0 0 3px rgba(99,102,241,.1)}.field textarea{min-height:80px;resize:vertical}.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:20px;z-index:10}.modal.show{display:flex}.modalbox{background:#fff;width:min(650px,100%);max-height:90vh;overflow:auto;border-radius:15px;padding:20px}.modalhead{display:flex;justify-content:space-between;align-items:center}.close{background:transparent;font-size:24px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.toolbar input,.toolbar select{padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;outline:none}.actions-cell button{padding:6px 8px;margin-right:4px}
-.bottom{display:none}
-@media(max-width:900px){.side{display:none}.main{margin:0;width:100%;padding:15px;padding-bottom:75px}.cards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.bottom{display:flex;position:fixed;bottom:0;left:0;right:0;background:#111827;padding:7px;z-index:5;justify-content:space-around}.bottom button{background:transparent;color:#fff;font-size:11px;padding:7px}.formgrid{grid-template-columns:1fr}}
-@media(max-width:500px){.cards{grid-template-columns:1fr 1fr}.top{align-items:flex-start;gap:10px}.top h1{font-size:20px}.actions .light{display:none}}
+.bottom{display:none}.mobileSheet{display:none}
+@media(max-width:900px){.side{display:none}.main{margin:0;width:100%;padding:15px;padding-bottom:86px}.cards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.bottom{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;bottom:0;left:0;right:0;background:rgba(17,24,39,.98);padding:6px 4px calc(6px + env(safe-area-inset-bottom));z-index:20;box-shadow:0 -8px 25px rgba(0,0,0,.16)}.bottom button{background:transparent;color:#cbd5e1;font-size:10px;padding:6px 2px;border-radius:10px;line-height:1.2}.bottom button.active{background:rgba(99,102,241,.28);color:#fff}.mobileSheet{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:30;align-items:flex-end}.mobileSheet.show{display:flex}.sheetBox{background:#fff;width:100%;border-radius:22px 22px 0 0;padding:16px 14px calc(18px + env(safe-area-inset-bottom));max-height:78vh;overflow:auto;box-shadow:0 -15px 40px rgba(0,0,0,.2)}.sheetHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.sheetHead h3{margin:0;font-size:18px}.sheetClose{background:#f1f5f9;border-radius:50%;width:36px;height:36px;padding:0;font-size:22px}.sheetGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.sheetGrid button{background:#f8fafc;border:1px solid #e5e7eb;color:#1f2937;padding:12px 6px;border-radius:14px;font-size:11px;min-height:62px}.sheetGrid button.active{background:#eef2ff;border-color:#818cf8;color:#4338ca}.mobilePlus{position:fixed;right:16px;bottom:78px;z-index:21;width:54px;height:54px;border-radius:50%;font-size:25px;padding:0}.formgrid{grid-template-columns:1fr}}
+@media(max-width:500px){.cards{grid-template-columns:1fr 1fr}.top{align-items:flex-start;gap:10px}.top h1{font-size:20px}.actions .light{display:none}.sheetGrid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}.main{padding-top:calc(15px + env(safe-area-inset-top));padding-bottom:calc(96px + env(safe-area-inset-bottom))}.bottom{padding-bottom:calc(8px + env(safe-area-inset-bottom))}.mobilePlus{bottom:calc(82px + env(safe-area-inset-bottom))}.modalbox{margin-top:env(safe-area-inset-top);max-height:calc(90vh - env(safe-area-inset-top))}.sheetBox{padding-bottom:calc(18px + env(safe-area-inset-bottom))}input,select,textarea,button{font-size:16px}input,select,textarea{min-height:44px}.bottom button{min-height:48px}.mobilePlus{width:58px;height:58px}}
 </style>
 </head>
 <body>
@@ -36,7 +35,7 @@ button,.btn{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-we
 <div class="top"><h1 id="pageTitle">Ana səhifə</h1><div class="actions"><button class="primary" onclick="openJob()">+ İş</button><button class="light" onclick="openExpense()">+ Xərc</button></div></div>
 <div id="content"></div>
 </main>
-<div class="bottom" id="bottomNav"></div>
+<div class="bottom" id="bottomNav"></div><button class="primary mobilePlus" onclick="openJob()">+</button><div class="mobileSheet" id="mobileSheet" onclick="if(event.target===this)toggleMobileMenu(false)"><div class="sheetBox"><div class="sheetHead"><h3>☰ Bütün bölmələr</h3><button class="sheetClose" onclick="toggleMobileMenu(false)">×</button></div><div class="sheetGrid" id="sheetGrid"></div></div></div>
 </div>
 
 <div class="modal" id="modal"><div class="modalbox"><div class="modalhead"><h2 id="modalTitle"></h2><button class="close" onclick="closeModal()">×</button></div><div id="modalBody"></div></div></div>
@@ -124,8 +123,9 @@ function today(){return new Date().toISOString().slice(0,10)}
 function fmt(d){if(!d)return'';let [y,m,day]=d.split('-');return `${day}.${m}.${y}`}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function sum(a,f){return a.reduce((x,y)=>x+Number(f(y)||0),0)}
-function nav(){let h=menu.map(x=>`<button class="${current===x[0]?'active':''}" onclick="show('${x[0]}')">${x[1]} ${x[2]}</button>`).join('');document.getElementById('nav').innerHTML=h;document.getElementById('bottomNav').innerHTML=menu.slice(0,5).map(x=>`<button onclick="show('${x[0]}')">${x[1]}<br>${x[2]}</button>`).join('')}
-function show(p){current=p;nav();document.getElementById('pageTitle').textContent=menu.find(x=>x[0]===p)?.[2]||'';render()}
+function nav(){let h=menu.map(x=>`<button class="${current===x[0]?'active':''}" onclick="show('${x[0]}')">${x[1]} ${x[2]}</button>`).join('');document.getElementById('nav').innerHTML=h;const quick=[['home','🏠','Ana səhifə'],['jobs','🛠️','İşlər'],['customers','👥','Müştərilər'],['reports','📈','Hesabat'],['more','☰','Daha çox']];document.getElementById('bottomNav').innerHTML=quick.map(x=>x[0]==='more'?`<button onclick="toggleMobileMenu(true)">${x[1]}<br>${x[2]}</button>`:`<button class="${current===x[0]?'active':''}" onclick="show('${x[0]}')">${x[1]}<br>${x[2]}</button>`).join('');document.getElementById('sheetGrid').innerHTML=menu.map(x=>`<button class="${current===x[0]?'active':''}" onclick="show('${x[0]}')">${x[1]}<br>${x[2]}</button>`).join('')}
+function toggleMobileMenu(v){document.getElementById('mobileSheet').classList.toggle('show',v)}
+function show(p){current=p;toggleMobileMenu(false);nav();document.getElementById('pageTitle').textContent=menu.find(x=>x[0]===p)?.[2]||'';render()}
 function render(){
  const c=document.getElementById('content');
  if(current==='home')return home(c);
@@ -373,9 +373,7 @@ async function updateBackupStatus(){
 function readBackup(e){let file=e.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();render();alert('Backup bərpa edildi.')}catch{alert('Backup faylı düzgün deyil.')}};r.readAsText(file)}
 function clearAll(){if(confirm('Bütün məlumatlar silinəcək. Əminsiniz?')){db={jobs:[],expenses:[],incomes:[],debts:[],notes:[],customers:[]};save();render()}}
 nav();render();setTimeout(updateBackupStatus,100);
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
-}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
 </script>
 </body>
 </html>
