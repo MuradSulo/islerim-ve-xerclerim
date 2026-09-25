@@ -581,14 +581,22 @@ function syncJobDebt(job){
   const amount=Math.max(0,Number(job.amount||0));
   const paid=Math.min(amount,Math.max(0,Number(job.paid||0)));
   const existing=db.debts.find(d=>d.jobId===job.id && d.autoFromJob);
-  if(amount<=0) { if(existing) db.debts=db.debts.filter(d=>d!==existing); return; }
+  const remaining=Math.max(0,amount-paid);
+  if(amount<=0 || remaining<=0){
+    if(existing) db.debts=db.debts.filter(d=>d!==existing);
+    return;
+  }
   const person=(job.customer||'Müştəri qeyd edilməyib').trim();
   const note='İş: '+(job.name||'İş');
   if(existing){
-    existing.type='receive'; existing.person=person; existing.amount=amount; existing.paid=paid; existing.date=job.date||today(); existing.note=note;
-  } else if(amount>paid){
+    existing.type='receive'; existing.person=person; existing.amount=amount; existing.paid=paid; existing.date=job.date||today(); existing.note=note; existing.due='';
+  } else {
     db.debts.push({id:'job-debt-'+job.id,jobId:job.id,autoFromJob:true,date:job.date||today(),person,type:'receive',amount,paid,note,due:''});
   }
+}
+function syncAllJobDebts(){
+  if(!Array.isArray(db.debts)) db.debts=[];
+  (db.jobs||[]).forEach(syncJobDebt);
 }
 function saveJob(e,id){
  e.preventDefault(); let f=new FormData(e.target),o=Object.fromEntries(f); o.id=id||Date.now().toString(); o.amount=+o.amount; o.cost=+o.cost||0;
@@ -598,6 +606,8 @@ function saveJob(e,id){
  delete o.newPayment; delete o.paymentDate; o.created=old?.created||new Date().toISOString(); if(i>=0)db.jobs[i]=o;else db.jobs.push(o);
  syncJobDebt(o); save();closeModal();render()
 }
+// Mövcud işlərdə də qalan məbləğ avtomatik borca çevrilir.
+syncAllJobDebts();
 const cats=['Yanacaq','Yemək','Yol','Material','Avadanlıq','Mağaza','Telefon/İnternet','Kommunal','Şəxsi','Digər'];
 function openExpense(id){let x=db.expenses.find(a=>a.id===id)||{};modal(id?'Xərci redaktə et':'Yeni xərc',`<form onsubmit="saveExpense(event,'${id||''}')"><div class="formgrid"><div class="field"><label>Tarix</label><input type="date" name="date" value="${x.date||today()}"></div><div class="field"><label>Kateqoriya</label><select name="category">${cats.map(s=>`<option ${x.category===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="field"><label>Məbləğ (₼)</label><input type="number" step="0.01" name="amount" required value="${x.amount??''}"></div><div class="field"><label>Qeyd</label><input name="note" value="${esc(x.note)}"></div></div><br><button class="primary">Yadda saxla</button></form>`)}
 function saveExpense(e,id){e.preventDefault();let o=Object.fromEntries(new FormData(e.target));o.id=id||Date.now().toString();o.amount=+o.amount;let i=db.expenses.findIndex(x=>x.id===o.id);if(i>=0)db.expenses[i]=o;else db.expenses.push(o);save();closeModal();render()}
