@@ -30,6 +30,73 @@ button,.btn{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-we
 
 .customer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.customer-card{border:1px solid var(--line);background:#fff;border-radius:16px;padding:15px;cursor:pointer;transition:.2s}.customer-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}.customer-card-head{display:flex;align-items:center;gap:10px}.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;display:grid;place-items:center;font-weight:800}.customer-phone,.customer-last{font-size:12px;color:var(--muted);margin-top:4px}.customer-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:13px}.customer-stats div,.customer-summary div{background:#f8fafc;border-radius:10px;padding:8px}.customer-stats small,.customer-summary small{display:block;color:var(--muted);font-size:10px}.customer-stats b,.customer-summary b{display:block;margin-top:3px;font-size:14px}.customer-detail h3{font-size:15px;margin:16px 0 8px}.customer-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.customer-job,.payment-row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.customer-job span,.customer-job small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.payment-row{font-size:12px}.payment-row b{white-space:nowrap}@media(max-width:900px){.customer-grid{grid-template-columns:1fr}.customer-summary{grid-template-columns:repeat(2,1fr)}}
 </style>
+
+<style id="premium-3d-theme">
+:root{
+ --three-bg:#eef3f9; --three-shadow:0 18px 45px rgba(31,41,55,.12),0 5px 14px rgba(31,41,55,.08);
+}
+html,body{
+ background:
+ radial-gradient(circle at 8% 8%,rgba(59,130,246,.13),transparent 28%),
+ radial-gradient(circle at 92% 12%,rgba(99,102,241,.12),transparent 25%),
+ radial-gradient(circle at 50% 100%,rgba(14,165,233,.08),transparent 30%),
+ var(--three-bg) !important;
+}
+.panel,.card,.stat-card,.summary-card,.report-card,.job-card,.expense-card,.note-card,.debt-card,.customer-card,.modal{
+ background:rgba(255,255,255,.84) !important;
+ border:1px solid rgba(255,255,255,.75) !important;
+ box-shadow:var(--three-shadow) !important;
+ backdrop-filter:blur(16px);
+ -webkit-backdrop-filter:blur(16px);
+ border-radius:20px !important;
+}
+.panel:hover,.card:hover,.job-card:hover,.expense-card:hover,.note-card:hover,.debt-card:hover,.customer-card:hover{
+ transform:translateY(-2px);
+ box-shadow:0 23px 52px rgba(31,41,55,.15),0 7px 18px rgba(31,41,55,.09) !important;
+ transition:.2s ease;
+}
+button,.btn,.primary,.secondary{
+ border-radius:14px !important;
+ box-shadow:0 7px 15px rgba(31,41,55,.14),inset 0 1px 0 rgba(255,255,255,.45) !important;
+ transition:transform .16s ease,box-shadow .16s ease !important;
+}
+button:hover,.btn:hover,.primary:hover,.secondary:hover{
+ transform:translateY(-2px);
+ box-shadow:0 11px 22px rgba(31,41,55,.18),inset 0 1px 0 rgba(255,255,255,.55) !important;
+}
+button:active,.btn:active,.primary:active,.secondary:active{
+ transform:translateY(1px) scale(.99);
+}
+input,select,textarea{
+ border-radius:13px !important;
+ background:rgba(255,255,255,.8) !important;
+ border:1px solid rgba(148,163,184,.28) !important;
+ box-shadow:inset 0 2px 5px rgba(15,23,42,.045),0 2px 8px rgba(15,23,42,.04) !important;
+}
+input:focus,select:focus,textarea:focus{
+ box-shadow:0 0 0 3px rgba(59,130,246,.13),inset 0 2px 5px rgba(15,23,42,.035) !important;
+}
+header,.topbar,.navbar,.sidebar{
+ box-shadow:0 12px 30px rgba(15,23,42,.12) !important;
+ backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+}
+.nav-item,.menu-item,.tab{border-radius:13px !important;transition:.18s ease}
+.nav-item:hover,.menu-item:hover,.tab:hover{transform:translateX(2px);box-shadow:0 8px 20px rgba(31,41,55,.08)}
+h1,h2,h3{letter-spacing:-.02em}
+.stat-card,.summary-card{position:relative;overflow:hidden}
+.stat-card::after,.summary-card::after{
+ content:"";position:absolute;width:100px;height:100px;border-radius:50%;
+ right:-30px;top:-35px;background:rgba(255,255,255,.28);pointer-events:none
+}
+@media(max-width:700px){
+ .panel,.card,.stat-card,.summary-card,.job-card,.expense-card,.note-card,.debt-card,.customer-card{
+  border-radius:17px !important;
+  box-shadow:0 12px 30px rgba(31,41,55,.10),0 3px 9px rgba(31,41,55,.06) !important;
+ }
+ button,.btn,.primary,.secondary{min-height:44px}
+}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -631,6 +698,23 @@ function openJob(id){
 <div class="field"><label>İşin adı</label><input name="name" required value="${esc(x.name)}"></div><div class="field"><label>Müştərinin adı</label><input name="customer" value="${esc(x.customer)}" list="customerNames"><datalist id="customerNames">${customerRecords().map(a=>`<option value="${esc(a.name)}">`).join('')}</datalist></div>
 <div class="field"><label>Telefon</label><input name="phone" value="${esc(x.phone)}"></div><div class="field"><label>Tarix</label><input type="date" name="date" value="${x.date||today()}"></div>
 <div class="field"><label>İşin məbləği (₼)</label><input type="number" step="0.01" min="0" name="amount" required value="${x.amount??''}"></div><div class="field"><label>İş xərci (₼)</label><input type="number" step="0.01" min="0" name="cost" value="${x.cost??0}" placeholder="Material, yol və s."></div>
+
+<div class="panel premium-3d" style="margin-top:14px;padding:16px">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+    <div style="width:48px;height:48px;border-radius:15px;display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(145deg,#ffffff,#dbeafe);box-shadow:7px 7px 16px rgba(30,64,175,.13),-4px -4px 12px rgba(255,255,255,.9);font-size:25px">💳</div>
+    <div>
+      <div style="font-weight:800;font-size:16px">Ödəniş və material xərci</div>
+      <div style="font-size:12px;opacity:.7">İş üçün alınan materialın məbləğini qeyd edin</div>
+    </div>
+  </div>
+  <label style="display:block;margin-bottom:6px">Material xərci / ödəniş məbləği</label>
+  <div style="position:relative">
+    <input id="newJobMaterialPayment" type="number" min="0" step="0.01" placeholder="0.00" style="padding-right:48px;width:100%;box-sizing:border-box">
+    <span style="position:absolute;right:15px;top:50%;transform:translateY(-50%);font-weight:700;opacity:.6">₼</span>
+  </div>
+</div>
+
 <div class="field"><label>Hazırda alınan məbləğ (₼)</label><input type="number" step="0.01" name="paid" value="${currentPaid}" readonly style="background:#f8fafc"></div><div class="field"><label>Yeni ödəniş (₼)</label><input type="number" step="0.01" min="0" name="newPayment" value="0" placeholder="İndi alınan məbləğ"></div>
 <div class="field"><label>Ödəniş tarixi</label><input type="date" name="paymentDate" value="${today()}"></div><div class="field"><label>Status</label><select name="status">${['Gözləyir','Davam edir','Tamamlandı','Ləğv edildi'].map(s=>`<option ${x.status===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="field"><label>Kateqoriya</label><select name="category" required><option value="">Kateqoriya seçin</option>${(db.jobTypes||[]).map(s=>`<option value="${esc(s)}" ${x.category===s?'selected':''}>${esc(s)}</option>`).join('')}</select></div>
 <div class="field full"><label>Qeyd</label><textarea name="note">${esc(x.note)}</textarea></div></div>${history?`<div style="margin-top:16px"><b>💳 Ödəniş tarixçəsi</b>${history}</div>`:''}<br><button class="primary">Yadda saxla</button></form>`)
@@ -760,5 +844,94 @@ async function activatePushFromSettings(){
 async function initWebPush(){try{await registerPushServiceWorker()}catch(e){}}
 nav();render();scheduleNoteNotifications();initWebPush();setTimeout(updateBackupStatus,100);setTimeout(initCloud,300);
 </script>
+
+<script id="keep-page-on-refresh">
+(function(){
+  const KEY='gelir_xerclerim_current_page';
+  function remember(){
+    try{
+      const candidates=['currentPage','currentSection','activePage','page','activeSection'];
+      for(const k of candidates){
+        if(typeof window[k]==='string' && window[k]){ localStorage.setItem(KEY,window[k]); return; }
+      }
+      const el=document.querySelector('[data-page].active,[data-section].active,.nav-item.active,.menu-item.active');
+      if(el){
+        const v=el.getAttribute('data-page')||el.getAttribute('data-section');
+        if(v) localStorage.setItem(KEY,v);
+      }
+    }catch(e){}
+  }
+  window.addEventListener('beforeunload',remember);
+  document.addEventListener('click',function(e){
+    const t=e.target.closest('[data-page],[data-section],.nav-item,.menu-item');
+    if(t) setTimeout(remember,50);
+  },true);
+  window.addEventListener('load',function(){
+    try{
+      const saved=localStorage.getItem(KEY);
+      if(!saved) return;
+      setTimeout(function(){
+        if(typeof window.showPage==='function') window.showPage(saved);
+        else if(typeof window.navigate==='function') window.navigate(saved);
+        else if(typeof window.renderPage==='function') window.renderPage(saved);
+      },300);
+    }catch(e){}
+  });
+})();
+</script>
+
+
+<script id="material-payment-helper">
+window.getNewJobMaterialPayment=function(){
+  const el=document.getElementById('newJobMaterialPayment');
+  return el ? (parseFloat(el.value)||0) : 0;
+};
+</script>
+
+
+<style id="fab-page-control">
+/* Floating + İş əlavə et button is page-specific. */
+.fab-page-hidden{display:none !important}
+</style>
+<script id="fab-page-control-js">
+(function(){
+  const allowedText=/İş\s*əlavə\s*et/i;
+  const HOME_KEYS=['home','ana','anasayfa','dashboard'];
+  const JOB_KEYS=['job','jobs','isler','is','newjob','addjob','işlər','iş','yeni iş'];
+  function pageName(){
+    const keys=['currentPage','currentSection','activePage','page','activeSection','currentView'];
+    for(const k of keys){try{if(typeof window[k]==='string'&&window[k]) return window[k].toLowerCase();}catch(e){}}
+    const el=document.querySelector('[data-page].active,[data-section].active,.nav-item.active,.menu-item.active');
+    if(el) return ((el.getAttribute('data-page')||el.getAttribute('data-section')||el.textContent||'')).toLowerCase();
+    return location.hash.toLowerCase();
+  }
+  function allowed(){
+    const p=pageName();
+    if(!p) return false;
+    if(HOME_KEYS.some(k=>p.includes(k))) return true;
+    if(JOB_KEYS.some(k=>p.includes(k))) return true;
+    return false;
+  }
+  function update(){
+    const els=[...document.querySelectorAll('button,a,[role="button"],div')].filter(el=>{
+      const t=(el.innerText||el.textContent||'').trim();
+      const aria=(el.getAttribute('aria-label')||'')+' '+(el.getAttribute('title')||'');
+      return allowedText.test(t+' '+aria) && (t.length<80 || aria);
+    });
+    els.forEach(el=>{
+      const s=getComputedStyle(el);
+      const fixed=s.position==='fixed' || /fixed/i.test(el.getAttribute('style')||'');
+      if(fixed || /fab|float|add/i.test(el.id+' '+el.className)){
+        el.classList.toggle('fab-page-hidden',!allowed());
+      }
+    });
+  }
+  window.addEventListener('load',()=>setTimeout(update,300));
+  setInterval(update,700);
+  document.addEventListener('click',()=>setTimeout(update,80),true);
+  window.addEventListener('hashchange',()=>setTimeout(update,100));
+})();
+</script>
+
 </body>
 </html>
