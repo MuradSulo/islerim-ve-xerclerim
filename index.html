@@ -609,6 +609,11 @@ function settings(c){c.innerHTML=`<div class="panel"><h2>⚙️ Ayarlar</h2>
 <p id="cloudStatus" style="margin:0 0 10px;color:var(--muted)">Yoxlanılır...</p>
 <button class="primary" onclick="openCloudAuth()">☁️ Bulud hesabı / Giriş</button>
 </div>
+<div style="padding:14px;background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;margin-bottom:15px">
+<h3 style="margin:0 0 8px">🔔 Telefon bildirişləri</h3>
+<p id="pushStatus" style="margin:0 0 10px;color:var(--muted)">Bildirişlər hələ aktivləşdirilməyib.</p>
+<button class="primary" onclick="activatePushFromSettings()">🔔 Bildirişləri aktiv et</button>
+</div>
 <div style="padding:14px;background:#f8fafc;border:1px solid var(--line);border-radius:12px;margin-bottom:15px">
 <h3 style="margin:0 0 8px">💾 Avtomatik backup</h3>
 <p id="backupStatus" style="margin:0 0 10px;color:var(--muted)">Yoxlanılır...</p>
@@ -729,9 +734,29 @@ async function updateBackupStatus(){
 function readBackup(e){let file=e.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();render();alert('Backup bərpa edildi.')}catch{alert('Backup faylı düzgün deyil.')}};r.readAsText(file)}
 function clearAll(){if(confirm('Bütün məlumatlar silinəcək. Əminsiniz?')){db={jobs:[],expenses:[],incomes:[],debts:[],notes:[],customers:[]};save();render()}}
 async function registerPushServiceWorker(){if(!('serviceWorker' in navigator))return null;try{return await navigator.serviceWorker.register('./sw.js',{scope:'./'})}catch(e){return null}}
-const PUSH_VAPID_PUBLIC_KEY='BFyQ18cCuh0glzwK1KwqqEA4N8VFbfelcgBgSPe6BL5m6cg6cYXLBam05I1pYXHV2icfcWzk86wyf7NPIH-arlA';
+const PUSH_VAPID_PUBLIC_KEY='BEmxlmPWuBtbtt7GHu8E8zGDfJfct7gmj47aiC4SQn_zw5X0GUqb-xXbed7stb7sw18FnumkUVhMG2mLPVIocP4';
 function urlBase64ToUint8Array(x){const p='='.repeat((4-x.length%4)%4),b=(x+p).replace(/-/g,'+').replace(/_/g,'/'),r=atob(b);return Uint8Array.from([...r].map(c=>c.charCodeAt(0)))}
 async function ensureWebPushSubscription(){if(!('serviceWorker'in navigator)||!('PushManager'in window)||!('Notification'in window))return false;const reg=await registerPushServiceWorker();if(!reg)return false;let perm=Notification.permission;if(perm==='default')perm=await Notification.requestPermission();if(perm!=='granted')return false;let sub=await reg.pushManager.getSubscription();if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(PUSH_VAPID_PUBLIC_KEY)});const j=sub.toJSON();db.pushSubscriptions=Array.isArray(db.pushSubscriptions)?db.pushSubscriptions:[];db.pushSubscriptions=db.pushSubscriptions.filter(x=>x&&x.endpoint!==j.endpoint);db.pushSubscriptions.push({endpoint:j.endpoint,keys:j.keys,updatedAt:new Date().toISOString()});save();return true}
+async function activatePushFromSettings(){
+ try{
+   if(!('Notification' in window)||!('serviceWorker' in navigator)||!('PushManager' in window)){
+     alert('Bu cihaz/brauzer Web Push bildirişlərini dəstəkləmir. iPhone-da proqramı Ana Ekrandan açın.');
+     return;
+   }
+   const ok=await ensureWebPushSubscription();
+   const el=document.getElementById('pushStatus');
+   if(ok){
+     if(el){el.textContent='🟢 Bildirişlər aktivdir. Bu telefonu push bildirişləri üçün qeydiyyata alındı.';el.style.color='#059669';}
+     alert('🔔 Bildirişlər aktiv edildi. İndi qeyd etdiyiniz tarix və saatda test edə bilərik.');
+   }else{
+     if(el){el.textContent='🟠 Bildiriş icazəsi verilmədi və ya qeydiyyat alınmadı.';}
+     alert('Bildiriş aktivləşdirilmədi. iPhone-da icazə istəyən pəncərə çıxarsa “Allow / İcazə ver” seçin.');
+   }
+ }catch(e){
+   console.error(e);
+   alert('Bildiriş aktivləşdirilərkən xəta baş verdi: '+(e.message||e));
+ }
+}
 async function initWebPush(){try{await registerPushServiceWorker()}catch(e){}}
 nav();render();scheduleNoteNotifications();initWebPush();setTimeout(updateBackupStatus,100);setTimeout(initCloud,300);
 </script>
