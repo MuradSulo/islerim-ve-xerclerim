@@ -15,50 +15,12 @@ button,.btn{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-we
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}.card{background:rgba(255,255,255,.9);border:1px solid rgba(226,232,240,.9);border-radius:18px;padding:20px;box-shadow:var(--shadow);position:relative;overflow:hidden}.card:after{content:'';position:absolute;right:-25px;top:-25px;width:90px;height:90px;border-radius:50%;background:rgba(99,102,241,.08)}.card small{color:var(--muted);font-weight:600}.value{font-size:26px;font-weight:800;margin-top:9px}.green{color:var(--green)}.red{color:var(--danger)}.orange{color:var(--orange)}
 .panel{background:rgba(255,255,255,.94);border:1px solid rgba(226,232,240,.95);border-radius:18px;padding:20px;margin-bottom:18px;box-shadow:var(--shadow)}.panel h2{font-size:18px;margin:0 0 15px;letter-spacing:-.2px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;font-size:14px}th{color:var(--muted);font-size:12px}.badge{padding:6px 10px;border-radius:999px;font-size:12px;background:#eef2ff;color:#4338ca;font-weight:700}.empty{padding:30px;text-align:center;color:var(--muted)}
-.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:600}.field input,.field select,.field textarea{padding:12px;border:1px solid #d7dce5;border-radius:10px;font:inherit;background:white;outline:none;transition:.2s}.field input:focus,.field select:focus,.field textarea:focus{border-color:#818cf8;box-shadow:0 0 0 3px rgba(99,102,241,.1)}.field textarea{min-height:80px;resize:vertical}.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:20px;z-index:10}.modal.show{display:flex}.modalbox{background:#fff;width:min(650px,100%);max-height:90vh;overflow:auto;border-radius:15px;padding:20px}.modalhead{display:flex;justify-content:space-between;align-items:center}.close{background:transparent;font-size:24px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.toolbar input,.toolbar select{padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;outline:none}.actions-cell button{padding:6px 8px;margin-right:4px}
+.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:600}.field input,.field select,.field textarea{padding:12px;border:1px solid #d7dce5;border-radius:10px;font:inherit;background:white;outline:none;transition:.2s}.field input:focus,.field select:focus,.field textarea:focus{border-color:#818cf8;box-shadow:0 0 0 3px rgba(99,102,241,.1)}.field textarea{min-height:80px;resize:vertical}.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:20px;z-index:100}.modal.show{display:flex}.modalbox{background:#fff;width:min(650px,100%);max-height:90vh;overflow:auto;border-radius:15px;padding:20px}.modalhead{display:flex;justify-content:space-between;align-items:center}.close{background:transparent;font-size:24px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.toolbar input,.toolbar select{padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;outline:none}.actions-cell button{padding:6px 8px;margin-right:4px}
 .bottom{display:none}.mobileSheet{display:none}
-@media(max-width:900px){.side{display:none}.main{margin:0;width:100%;padding:15px;padding-bottom:86px}.cards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.bottom{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;bottom:0;left:0;right:0;background:rgba(17,24,39,.98);padding:6px 4px calc(6px + env(safe-area-inset-bottom));z-index:20;box-shadow:0 -8px 25px rgba(0,0,0,.16)}.bottom button{background:transparent;color:#cbd5e1;font-size:10px;padding:6px 2px;border-radius:10px;line-height:1.2}.bottom button.active{background:rgba(99,102,241,.28);color:#fff}.mobileSheet{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:30;align-items:flex-end}.mobileSheet.show{display:flex}.sheetBox{background:#fff;width:100%;border-radius:22px 22px 0 0;padding:16px 14px calc(18px + env(safe-area-inset-bottom));max-height:78vh;overflow:auto;box-shadow:0 -15px 40px rgba(0,0,0,.2)}.sheetHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.sheetHead h3{margin:0;font-size:18px}.sheetClose{background:#f1f5f9;border-radius:50%;width:36px;height:36px;padding:0;font-size:22px}.sheetGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.sheetGrid button{background:#f8fafc;border:1px solid #e5e7eb;color:#1f2937;padding:12px 6px;border-radius:14px;font-size:11px;min-height:62px}.sheetGrid button.active{background:#eef2ff;border-color:#818cf8;color:#4338ca}.mobilePlus{position:fixed;right:16px;bottom:78px;z-index:21;width:54px;height:54px;border-radius:50%;font-size:25px;padding:0}.formgrid{grid-template-columns:1fr}}
+@media(max-width:900px){.modal{z-index:100;align-items:flex-start;padding:58px 12px calc(90px + env(safe-area-inset-bottom));overflow:auto}.modalbox{width:100%;max-height:calc(100vh - 150px);overflow-y:auto;border-radius:20px;padding:18px 16px 24px;margin:0}.modalbox form{padding-bottom:4px}.modalbox form > .primary:last-child{width:100%;min-height:50px;font-size:16px}.modalhead{position:sticky;top:0;background:#fff;z-index:2;padding-bottom:10px;margin-bottom:8px}.mobilePlus{z-index:21}.side{display:none}.main{margin:0;width:100%;padding:15px;padding-bottom:86px}.cards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.bottom{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;bottom:0;left:0;right:0;background:rgba(17,24,39,.98);padding:6px 4px calc(6px + env(safe-area-inset-bottom));z-index:20;box-shadow:0 -8px 25px rgba(0,0,0,.16)}.bottom button{background:transparent;color:#cbd5e1;font-size:10px;padding:6px 2px;border-radius:10px;line-height:1.2}.bottom button.active{background:rgba(99,102,241,.28);color:#fff}.mobileSheet{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:30;align-items:flex-end}.mobileSheet.show{display:flex}.sheetBox{background:#fff;width:100%;border-radius:22px 22px 0 0;padding:16px 14px calc(18px + env(safe-area-inset-bottom));max-height:78vh;overflow:auto;box-shadow:0 -15px 40px rgba(0,0,0,.2)}.sheetHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.sheetHead h3{margin:0;font-size:18px}.sheetClose{background:#f1f5f9;border-radius:50%;width:36px;height:36px;padding:0;font-size:22px}.sheetGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.sheetGrid button{background:#f8fafc;border:1px solid #e5e7eb;color:#1f2937;padding:12px 6px;border-radius:14px;font-size:11px;min-height:62px}.sheetGrid button.active{background:#eef2ff;border-color:#818cf8;color:#4338ca}.mobilePlus{position:fixed;right:16px;bottom:78px;z-index:21;width:54px;height:54px;border-radius:50%;font-size:25px;padding:0}.formgrid{grid-template-columns:1fr}}
 @media(max-width:500px){.cards{grid-template-columns:1fr 1fr}.top{align-items:flex-start;gap:10px}.top h1{font-size:20px}.actions .light{display:none}.sheetGrid{grid-template-columns:repeat(3,1fr)}}
 
-/* Telefon üçün xüsusi görünüş */
-.mobileOnly{display:none}
-.desktopOnly{display:block}
-@media(max-width:700px){
-  body{font-size:14px;overflow-x:hidden}
-  .main{padding:12px 10px 88px}
-  .top{margin-bottom:10px}
-  .top h1{font-size:21px;margin:0}
-  .cards{gap:9px;margin-bottom:14px}
-  .card{padding:13px 12px;border-radius:16px;min-height:78px}
-  .card small{font-size:12px;line-height:1.25;display:block}
-  .value{font-size:21px;margin-top:6px}
-  .grid2{gap:12px}
-  .panel{padding:13px 11px;border-radius:16px}
-  .panel h2{font-size:19px;margin:0 0 10px}
-  .desktopOnly{display:none!important}
-  .mobileOnly{display:block}
-  .mobile-job{display:grid;gap:8px}
-  .job-mobile-card,.expense-mobile-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;box-shadow:0 5px 16px rgba(31,41,55,.05)}
-  .job-mobile-head,.expense-mobile-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
-  .job-mobile-title{font-weight:800;font-size:15px;line-height:1.25}
-  .job-mobile-customer{font-size:12px;color:var(--muted);margin-top:3px}
-  .job-mobile-amount{font-weight:800;font-size:16px;white-space:nowrap}
-  .job-mobile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
-  .job-mobile-grid>div{background:#f8fafc;border-radius:10px;padding:7px 6px}
-  .job-mobile-grid small{display:block;color:var(--muted);font-size:10px;margin-bottom:2px}
-  .job-mobile-grid b{font-size:12px}
-  .mobile-meta{display:flex;justify-content:space-between;align-items:center;margin-top:9px;font-size:11px;color:var(--muted);gap:6px}
-  .mobile-actions{display:flex;gap:6px}
-  .mobile-actions button{min-width:38px;min-height:34px;padding:5px 9px}
-  .expense-mobile-card{display:flex;justify-content:space-between;gap:10px;align-items:center}
-  .expense-mobile-left{min-width:0}
-  .expense-mobile-cat{font-weight:800;font-size:14px}
-  .expense-mobile-note{font-size:12px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .expense-mobile-right{text-align:right;white-space:nowrap}
-  .expense-mobile-right b{font-size:16px}
-  .expense-mobile-date{font-size:11px;color:var(--muted);margin-top:3px}
-}
-
+.note-reminder{border-left:4px solid #6366f1;background:#f8faff;padding:12px 14px;border-radius:12px;margin-top:10px}.note-meta{color:var(--muted);font-size:12px;margin-top:5px}.month-report{margin-top:18px}.month-report .mini{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.month-report .mini-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}.month-report .mini-card small{display:block;color:var(--muted);font-size:12px}.month-report .mini-value{font-weight:800;font-size:18px;margin-top:4px}.today-notes{margin-top:18px}.note-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}@media(max-width:700px){.month-report .mini{grid-template-columns:1fr 1fr}.note-reminder{padding:11px}.month-report .mini-value{font-size:16px}}
 </style>
 </head>
 <body>
@@ -319,25 +281,40 @@ function render(){
 }
 function home(c){
  let inc=sum(db.incomes,x=>x.amount)+sum(db.jobs,x=>x.paid), exp=sum(db.expenses,x=>x.amount), jobCost=sum(db.jobs,x=>x.cost), profit=inc-jobCost, recv=sum(db.jobs,x=>Number(x.amount)-Number(x.paid))+sum(db.debts.filter(x=>x.type==='receive'),x=>Number(x.amount)-Number(x.paid));
+ const now=new Date(), ms=localISODate(new Date(now.getFullYear(),now.getMonth(),1)), me=localISODate(now);
+ const mj=db.jobs.filter(x=>inReportRange(x.date,ms,me)), mi=db.incomes.filter(x=>inReportRange(x.date,ms,me)), mep=db.expenses.filter(x=>inReportRange(x.date,ms,me));
+ const mIncome=sum(mj,x=>x.amount)+sum(mi,x=>x.amount), mCost=sum(mj,x=>x.cost), mNet=mIncome-mCost, mSeparate=sum(mep,x=>x.amount);
+ const todayNotes=(db.notes||[]).filter(x=>x.date===today()).slice().sort((a,b)=>String(a.time||'').localeCompare(String(b.time||'')));
  c.innerHTML=`<div class="panel" style="background:linear-gradient(135deg,#eef2ff,#faf5ff);border:0"><div style="font-size:13px;color:#6366f1;font-weight:800">📊 İŞLƏRİNİZİN İDARƏETMƏ MƏRKƏZİ</div><div style="font-size:22px;font-weight:800;margin-top:5px">Bugünkü vəziyyətiniz</div><div style="color:#64748b;margin-top:5px">Gəlir, xərc, işlər və borclar bir ekranda.</div></div>
  <div class="cards">
  <div class="card"><small>💰 Ümumi gəlir</small><div class="value green">${money(inc)}</div></div>
  <div class="card"><small>🔧 İş xərci</small><div class="value red">${money(jobCost)}</div></div>
  <div class="card"><small>📈 İşdən xalis qazanc</small><div class="value ${profit>=0?'green':'red'}">${money(profit)}</div></div>
  <div class="card"><small>🧾 Alınacaq pul</small><div class="value orange">${money(recv)}</div></div></div>
+ <div class="today-notes panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 style="margin:0">🔔 Bugünkü qeydlər</h2><button class="light" onclick="show('notes')">Bütün qeydlər</button></div>
+ ${todayNotes.length?todayNotes.map(x=>`<div class="note-reminder"><b>${esc(x.text)}</b><div class="note-meta">👤 ${esc(x.customer||'Müştəri qeyd edilməyib')} &nbsp; 📞 ${esc(x.phone||'')} &nbsp; 🕒 ${esc(x.time||'Saat yoxdur')}</div></div>`).join(''):'<div class="empty">Bu gün üçün qeyd yoxdur.</div>'}</div>
+ <div class="month-report panel"><h2>📅 Bu ayın hesabatı</h2><div class="mini">
+ <div class="mini-card"><small>Gəlir</small><div class="mini-value green">${money(mIncome)}</div></div>
+ <div class="mini-card"><small>İş xərci</small><div class="mini-value red">${money(mCost)}</div></div>
+ <div class="mini-card"><small>Xalis qazanc</small><div class="mini-value ${mNet>=0?'green':'red'}">${money(mNet)}</div></div>
+ <div class="mini-card"><small>Ayrı xərclər</small><div class="mini-value red">${money(mSeparate)}</div></div></div>
+ <div style="margin-top:10px;color:var(--muted);font-size:12px">${fmt(ms)} — ${fmt(me)} · ${mj.length} iş</div></div>
  <div class="panel" style="background:#fff7ed;border-color:#fed7aa"><div style="display:flex;justify-content:space-between;align-items:center"><div><b>💸 Ayrı xərclər</b><div style="color:#9a3412;font-size:13px;margin-top:4px">“Xərclər” bölməsinə yazılan məbləğlər iş xərci və işdən xalis qazanc hesabına daxil edilmir.</div></div><strong style="font-size:22px;color:#c2410c">${money(exp)}</strong></div></div>
  <div class="grid2"><div class="panel"><h2>🛠️ Son işlər</h2>${jobTable(db.jobs.slice().reverse().slice(0,6))}</div>
  <div class="panel"><h2>💸 Son xərclər</h2>${expenseTable(db.expenses.slice().reverse().slice(0,6))}</div></div>`;
 }
 function toolbar(placeholder,onadd,extra=''){return `<div class="toolbar"><input id="search" placeholder="${placeholder}" oninput="render()">${extra}<button class="primary" onclick="${onadd}">+ Əlavə et</button></div>`}
-function jobTable(arr){if(!arr.length)return'<div class="empty">Hələ iş əlavə edilməyib.</div>';return `<div class="desktopOnly tablewrap"><table><tr><th>Tarix</th><th>İş</th><th>Müştəri</th><th>İş məbləği</th><th>İş xərci</th><th>Xalis qazanc</th><th>Qalan</th><th>Status</th><th></th></tr>${arr.map(x=>`<tr><td>${fmt(x.date)}</td><td>${esc(x.name)}</td><td>${esc(x.customer)}</td><td>${money(x.amount)}</td><td class="red">${money(x.cost)}</td><td class="${Number(x.amount)-Number(x.cost)>=0?'green':'red'}">${money(Number(x.amount)-Number(x.cost))}</td><td>${money(Number(x.amount)-Number(x.paid))}</td><td><span class="badge">${esc(x.status)}</span></td><td class="actions-cell"><button class="light" onclick="openJob('${x.id}')">✏️</button><button class="danger" onclick="del('jobs','${x.id}')">🗑️</button></td></tr>`).join('')}</table></div><div class="mobileOnly mobile-job">${arr.map(x=>{const net=Number(x.amount)-Number(x.cost),remain=Number(x.amount)-Number(x.paid);return `<div class="job-mobile-card"><div class="job-mobile-head"><div><div class="job-mobile-title">${esc(x.name)}</div><div class="job-mobile-customer">👤 ${esc(x.customer||'Müştəri qeyd edilməyib')}</div></div><div class="job-mobile-amount">${money(x.amount)}</div></div><div class="job-mobile-grid"><div><small>💸 Xərc</small><b class="red">${money(x.cost)}</b></div><div><small>📈 Xalis</small><b class="${net>=0?'green':'red'}">${money(net)}</b></div><div><small>💰 Qalan</small><b>${money(remain)}</b></div></div><div class="mobile-meta"><span>📅 ${fmt(x.date)} · <span class="badge">${esc(x.status)}</span></span><span class="mobile-actions"><button class="light" onclick="openJob('${x.id}')">✏️</button><button class="danger" onclick="del('jobs','${x.id}')">🗑️</button></span></div></div>`}).join('')}</div>`}
-function expenseTable(arr){if(!arr.length)return'<div class="empty">Hələ xərc əlavə edilməyib.</div>';return `<div class="desktopOnly tablewrap"><table><tr><th>Tarix</th><th>Kateqoriya</th><th>Məbləğ</th><th>Qeyd</th><th></th></tr>${arr.map(x=>`<tr><td>${fmt(x.date)}</td><td>${esc(x.category)}</td><td class="red">${money(x.amount)}</td><td>${esc(x.note)}</td><td><button class="light" onclick="openExpense('${x.id}')">✏️</button><button class="danger" onclick="del('expenses','${x.id}')">🗑️</button></td></tr>`).join('')}</table></div><div class="mobileOnly mobile-job">${arr.map(x=>`<div class="expense-mobile-card"><div class="expense-mobile-left"><div class="expense-mobile-cat">${esc(x.category)}</div><div class="expense-mobile-note">${esc(x.note||'Qeyd yoxdur')}</div></div><div class="expense-mobile-right"><b class="red">${money(x.amount)}</b><div class="expense-mobile-date">${fmt(x.date)} <button class="light" onclick="openExpense('${x.id}')">✏️</button><button class="danger" onclick="del('expenses','${x.id}')">🗑️</button></div></div></div>`).join('')}</div>`}
+function jobTable(arr){if(!arr.length)return'<div class="empty">Hələ iş əlavə edilməyib.</div>';return `<div class="tablewrap"><table><tr><th>Tarix</th><th>İş</th><th>Müştəri</th><th>İş məbləği</th><th>İş xərci</th><th>Xalis qazanc</th><th>Qalan</th><th>Status</th><th></th></tr>${arr.map(x=>`<tr><td>${fmt(x.date)}</td><td>${esc(x.name)}</td><td>${esc(x.customer)}</td><td>${money(x.amount)}</td><td class="red">${money(x.cost)}</td><td class="${Number(x.amount)-Number(x.cost)>=0?'green':'red'}">${money(Number(x.amount)-Number(x.cost))}</td><td>${money(Number(x.amount)-Number(x.paid))}</td><td><span class="badge">${esc(x.status)}</span></td><td class="actions-cell"><button class="light" onclick="openJob('${x.id}')">✏️</button><button class="danger" onclick="del('jobs','${x.id}')">🗑️</button></td></tr>`).join('')}</table></div>`}
+function expenseTable(arr){if(!arr.length)return'<div class="empty">Hələ xərc əlavə edilməyib.</div>';return `<div class="tablewrap"><table><tr><th>Tarix</th><th>Kateqoriya</th><th>Məbləğ</th><th>Qeyd</th><th></th></tr>${arr.map(x=>`<tr><td>${fmt(x.date)}</td><td>${esc(x.category)}</td><td class="red">${money(x.amount)}</td><td>${esc(x.note)}</td><td><button class="light" onclick="openExpense('${x.id}')">✏️</button><button class="danger" onclick="del('expenses','${x.id}')">🗑️</button></td></tr>`).join('')}</table></div>`}
 function jobs(c){let q=(document.getElementById('search')?.value||'').toLowerCase();let arr=db.jobs.filter(x=>(x.name+x.customer+x.phone+x.status).toLowerCase().includes(q));c.innerHTML=toolbar('İş, müştəri və ya telefon axtar...','openJob()')+jobTable(arr)}
 function expenses(c){let q=(document.getElementById('search')?.value||'').toLowerCase();let arr=db.expenses.filter(x=>(x.category+x.note).toLowerCase().includes(q));c.innerHTML=toolbar('Xərc axtar...','openExpense()')+expenseTable(arr)}
 function incomes(c){let q=(document.getElementById('search')?.value||'').toLowerCase();let arr=db.incomes.filter(x=>(x.source+x.note).toLowerCase().includes(q));c.innerHTML=toolbar('Gəlir axtar...','openIncome()')+`<div class="panel">${arr.length?`<table><tr><th>Tarix</th><th>Mənbə</th><th>Məbləğ</th><th>Qeyd</th><th></th></tr>${arr.map(x=>`<tr><td>${fmt(x.date)}</td><td>${esc(x.source)}</td><td class="green">${money(x.amount)}</td><td>${esc(x.note)}</td><td><button class="light" onclick="openIncome('${x.id}')">✏️</button><button class="danger" onclick="del('incomes','${x.id}')">🗑️</button></td></tr>`).join('')}</table>`:'<div class="empty">Hələ gəlir yoxdur.</div>'}</div>`}
 function debts(c){let q=(document.getElementById('search')?.value||'').toLowerCase();let arr=db.debts.filter(x=>(x.person+x.note).toLowerCase().includes(q));c.innerHTML=toolbar('Şəxs və ya qeyd axtar...','openDebt()')+`<div class="panel"><table><tr><th>Tip</th><th>Şəxs/Firma</th><th>Ümumi</th><th>Ödənilən</th><th>Qalan</th><th></th></tr>${arr.map(x=>`<tr><td>${x.type==='receive'?'Alınacaq':'Veriləcək'}</td><td>${esc(x.person)}</td><td>${money(x.amount)}</td><td>${money(x.paid)}</td><td class="${Number(x.amount)-Number(x.paid)>0?'orange':'green'}">${money(Number(x.amount)-Number(x.paid))}</td><td><button class="light" onclick="openDebt('${x.id}')">✏️</button><button class="danger" onclick="del('debts','${x.id}')">🗑️</button></td></tr>`).join('')}</table></div>`}
 function customers(c){let names=[...new Set(db.jobs.map(x=>x.customer).filter(Boolean))];c.innerHTML=`<div class="panel"><h2>Müştərilər</h2>${names.length?`<table><tr><th>Müştəri</th><th>İş sayı</th><th>Ümumi iş məbləği</th><th>Qalan</th></tr>${names.map(n=>{let a=db.jobs.filter(x=>x.customer===n);return `<tr><td>${esc(n)}</td><td>${a.length}</td><td>${money(sum(a,x=>x.amount))}</td><td>${money(sum(a,x=>Number(x.amount)-Number(x.paid)))}</td></tr>`}).join('')}</table>`:'<div class="empty">Müştəri məlumatı iş əlavə etdikcə burada görünəcək.</div>'}</div>`}
-function notes(c){c.innerHTML=`<div class="panel"><h2>Gündəlik qeydlər və işlər</h2><button class="primary" onclick="openNote()">+ Qeyd əlavə et</button><div style="margin-top:15px">${db.notes.slice().reverse().map(x=>`<div style="padding:12px;border-bottom:1px solid var(--line)"><label><input type="checkbox" ${x.done?'checked':''} onchange="toggleNote('${x.id}')"> ${esc(x.text)}</label><button class="danger" style="float:right" onclick="del('notes','${x.id}')">🗑️</button><div style="color:var(--muted);font-size:12px">${fmt(x.date)}</div></div>`).join('')||'<div class="empty">Qeyd yoxdur.</div>'}</div></div>`}
+function notes(c){
+ let arr=(db.notes||[]).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b.time||'').localeCompare(a.time||''));
+ c.innerHTML=`<div class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><h2 style="margin:0">🔔 Qeydlər və xatırlatmalar</h2><div style="color:var(--muted);font-size:13px;margin-top:5px">Müştəri, telefon, tarix və saat yazın. Vaxt çatanda bildiriş göstəriləcək.</div></div><button class="primary" onclick="openNote()">+ Qeyd əlavə et</button></div><div style="margin-top:15px">${arr.map(x=>`<div class="note-reminder"><div><label><input type="checkbox" ${x.done?'checked':''} onchange="toggleNote('${x.id}')"> <b>${esc(x.text)}</b></label><button class="light" style="float:right;margin-right:6px" onclick="openNote('${x.id}')">✏️</button><button class="danger" style="float:right" onclick="del('notes','${x.id}')">🗑️</button></div><div class="note-meta">👤 ${esc(x.customer||'Müştəri yoxdur')} &nbsp; 📞 ${esc(x.phone||'Telefon yoxdur')} &nbsp; 📅 ${fmt(x.date)} ${x.time?'· 🕒 '+esc(x.time):''}</div></div>`).join('')||'<div class="empty">Qeyd yoxdur.</div>'}</div></div>`;
+}
 
 function personalExpenses(c){
  let q=(document.getElementById('search')?.value||'').toLowerCase();
@@ -516,10 +493,33 @@ function openIncome(id){let x=db.incomes.find(a=>a.id===id)||{};modal(id?'Gəlir
 function saveIncome(e,id){e.preventDefault();let o=Object.fromEntries(new FormData(e.target));o.id=id||Date.now().toString();o.amount=+o.amount;let i=db.incomes.findIndex(x=>x.id===o.id);if(i>=0)db.incomes[i]=o;else db.incomes.push(o);save();closeModal();render()}
 function openDebt(id){let x=db.debts.find(a=>a.id===id)||{};modal(id?'Borcu redaktə et':'Yeni borc',`<form onsubmit="saveDebt(event,'${id||''}')"><div class="formgrid"><div class="field"><label>Tip</label><select name="type"><option value="receive" ${x.type==='receive'?'selected':''}>Alınacaq</option><option value="pay" ${x.type==='pay'?'selected':''}>Veriləcək</option></select></div><div class="field"><label>Şəxs/Firma</label><input name="person" required value="${esc(x.person)}"></div><div class="field"><label>Ümumi məbləğ (₼)</label><input type="number" step="0.01" name="amount" required value="${x.amount??''}"></div><div class="field"><label>Ödənilən (₼)</label><input type="number" step="0.01" name="paid" value="${x.paid??0}"></div><div class="field full"><label>Qeyd</label><textarea name="note">${esc(x.note)}</textarea></div></div><br><button class="primary">Yadda saxla</button></form>`)}
 function saveDebt(e,id){e.preventDefault();let o=Object.fromEntries(new FormData(e.target));o.id=id||Date.now().toString();o.amount=+o.amount;o.paid=+o.paid;let i=db.debts.findIndex(x=>x.id===o.id);if(i>=0)db.debts[i]=o;else db.debts.push(o);save();closeModal();render()}
-function openNote(){modal('Yeni qeyd',`<form onsubmit="saveNote(event)"><div class="field"><label>Qeyd / görüləcək iş</label><textarea name="text" required autofocus></textarea></div><br><button class="primary">Yadda saxla</button></form>`)}
-function saveNote(e){e.preventDefault();let o=Object.fromEntries(new FormData(e.target));db.notes.push({id:Date.now().toString(),text:o.text,date:today(),done:false});save();closeModal();render()}
+function openNote(id){
+ let x=(db.notes||[]).find(a=>a.id===id)||{};
+ modal(id?'Qeydi redaktə et':'Yeni qeyd',`<form onsubmit="saveNote(event,'${id||''}')"><div class="formgrid"><div class="field full"><label>Qeyd / görüləcək iş</label><textarea name="text" required autofocus>${esc(x.text)}</textarea></div><div class="field"><label>Müştərinin adı</label><input name="customer" value="${esc(x.customer)}" placeholder="Məs: Əli"></div><div class="field"><label>Telefon nömrəsi</label><input type="tel" name="phone" value="${esc(x.phone)}" placeholder="050..."></div><div class="field"><label>Tarix</label><input type="date" name="date" value="${x.date||today()}" required></div><div class="field"><label>Saat</label><input type="time" name="time" value="${x.time||''}"></div></div><br><button class="primary">Yadda saxla</button></form>`);
+}
+function saveNote(e,id){e.preventDefault();let o=Object.fromEntries(new FormData(e.target));o.id=id||'note-'+Date.now();o.done=id?(db.notes.find(x=>x.id===id)?.done||false):false;let i=(db.notes||[]).findIndex(x=>x.id===o.id);if(i>=0)db.notes[i]=o;else db.notes.push(o);save();requestNotificationPermission();scheduleNoteNotifications();closeModal();render()}
+function toggleNote(id){let x=db.notes.find(a=>a.id===id);if(x)x.done=!x.done;save();render()}
 function toggleNote(id){let x=db.notes.find(a=>a.id===id);if(x)x.done=!x.done;save();render()}
 function del(type,id){if(!confirm('Bu məlumatı silmək istəyirsiniz?'))return;db[type]=db[type].filter(x=>x.id!==id);save();render()}
+async function requestNotificationPermission(){
+ if(!('Notification' in window))return;
+ if(Notification.permission==='default'){try{await Notification.requestPermission()}catch(e){}}
+}
+function scheduleNoteNotifications(){
+ clearTimeout(window.__noteTimer);
+ const tick=()=>{
+   const now=new Date(), d=localISODate(now), t=now.toTimeString().slice(0,5);
+   (db.notes||[]).forEach(x=>{if(!x.done && x.date===d && x.time && x.time<=t && x.time>=t){
+     const key='note-notified-'+x.id+'-'+d+'-'+x.time;
+     if(localStorage.getItem(key))return;
+     localStorage.setItem(key,'1');
+     if('Notification' in window && Notification.permission==='granted'){new Notification('🔔 İşlərim və Xərclərim',{body:(x.customer?x.customer+' — ':'')+x.text+(x.phone?' · '+x.phone:'')});}
+     else alert('🔔 Xatırlatma\n'+(x.customer?x.customer+' — ':'')+x.text);
+   }});
+   window.__noteTimer=setTimeout(tick,30000);
+ };
+ tick();
+}
 async function chooseBackupFile(){
   if(!window.showSaveFilePicker){
     alert('Bu funksiya üçün Chrome və ya Microsoft Edge istifadə edin.');
@@ -552,7 +552,7 @@ async function updateBackupStatus(){
 }
 function readBackup(e){let file=e.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();render();alert('Backup bərpa edildi.')}catch{alert('Backup faylı düzgün deyil.')}};r.readAsText(file)}
 function clearAll(){if(confirm('Bütün məlumatlar silinəcək. Əminsiniz?')){db={jobs:[],expenses:[],incomes:[],debts:[],notes:[],customers:[]};save();render()}}
-nav();render();setTimeout(updateBackupStatus,100);setTimeout(initCloud,300);
+nav();render();scheduleNoteNotifications();setTimeout(updateBackupStatus,100);setTimeout(initCloud,300);
 </script>
 </body>
 </html>
