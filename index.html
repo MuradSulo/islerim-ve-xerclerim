@@ -102,10 +102,10 @@ h1,h2,h3{letter-spacing:-.02em}
 <div class="app">
 <aside class="side"><div class="logo">📊 İşlərim və Xərclərim</div><div class="nav" id="nav"></div></aside>
 <main class="main">
-<div class="top"><h1 id="pageTitle">Ana səhifə</h1><div class="actions"><button class="primary" onclick="openJob()">+ İş</button><button class="light" onclick="openExpense()">+ Xərc</button></div></div>
+<div class="top"><h1 id="pageTitle">Ana səhifə</h1><div class="actions"><button class="primary" id="topAddBtn" onclick="pageAddAction()">+ İş</button><button class="light" onclick="openExpense()">+ Xərc</button></div></div>
 <div id="content"></div>
 </main>
-<button class="refreshBtn" id="refreshBtn" onclick="refreshApp()" title="Proqramı yenilə" aria-label="Proqramı yenilə">🔄</button><div class="bottom" id="bottomNav"></div><button class="primary mobilePlus" onclick="openJob()">+</button><div class="mobileSheet" id="mobileSheet" onclick="if(event.target===this)toggleMobileMenu(false)"><div class="sheetBox"><div class="sheetHead"><h3>☰ Bütün bölmələr</h3><button class="sheetClose" onclick="toggleMobileMenu(false)">×</button></div><div class="sheetGrid" id="sheetGrid"></div></div></div>
+<button class="refreshBtn" id="refreshBtn" onclick="refreshApp()" title="Proqramı yenilə" aria-label="Proqramı yenilə">🔄</button><div class="bottom" id="bottomNav"></div><button class="primary mobilePlus" id="mobilePlus" onclick="openJob()" aria-label="İş əlavə et">+</button><div class="mobileSheet" id="mobileSheet" onclick="if(event.target===this)toggleMobileMenu(false)"><div class="sheetBox"><div class="sheetHead"><h3>☰ Bütün bölmələr</h3><button class="sheetClose" onclick="toggleMobileMenu(false)">×</button></div><div class="sheetGrid" id="sheetGrid"></div></div></div>
 </div>
 
 <div class="modal" id="modal"><div class="modalbox"><div class="modalhead"><h2 id="modalTitle"></h2><button class="close" onclick="closeModal()">×</button></div><div id="modalBody"></div></div></div>
@@ -364,8 +364,16 @@ function refreshApp(){
 }
 function nav(){let h=menu.map(x=>`<button class="${current===x[0]?'active':''}" onclick="show('${x[0]}')">${x[1]} ${x[2]}</button>`).join('');document.getElementById('nav').innerHTML=h;const quick=[['home','🏠','Ana səhifə'],['jobs','🛠️','İşlər'],['customers','👥','Müştərilər'],['reports','📈','Hesabat'],['more','☰','Daha çox']];document.getElementById('bottomNav').innerHTML=quick.map(x=>x[0]==='more'?`<button onclick="toggleMobileMenu(true)">${x[1]}<br>${x[2]}</button>`:`<button class="${current===x[0]?'active':''}" onclick="show('${x[0]}')">${x[1]}<br>${x[2]}</button>`).join('');document.getElementById('sheetGrid').innerHTML=menu.map(x=>`<button class="${current===x[0]?'active':''}" onclick="show('${x[0]}')">${x[1]}<br>${x[2]}</button>`).join('')}
 function toggleMobileMenu(v){document.getElementById('mobileSheet').classList.toggle('show',v)}
-function show(p){current=p;toggleMobileMenu(false);nav();document.getElementById('pageTitle').textContent=menu.find(x=>x[0]===p)?.[2]||'';render()}
+function show(p){current=p;toggleMobileMenu(false);nav();document.getElementById('pageTitle').textContent=menu.find(x=>x[0]===p)?.[2]||'';render();updateMobilePlus();updateTopAdd()}
+function updateMobilePlus(){
+ const b=document.getElementById('mobilePlus');
+ if(!b)return;
+ // Floating + button is intentionally available only from Ana səhifə and İşlər.
+ const visible=(current==='home'||current==='jobs');
+ b.style.display=visible?'block':'none';
+}
 function render(){
+ updateMobilePlus();updateTopAdd();
  const c=document.getElementById('content');
  if(current==='home')return home(c);
  if(current==='jobs')return jobs(c);
@@ -889,48 +897,62 @@ window.getNewJobMaterialPayment=function(){
 </script>
 
 
-<style id="fab-page-control">
-/* Floating + İş əlavə et button is page-specific. */
-.fab-page-hidden{display:none !important}
-</style>
-<script id="fab-page-control-js">
-(function(){
-  const allowedText=/İş\s*əlavə\s*et/i;
-  const HOME_KEYS=['home','ana','anasayfa','dashboard'];
-  const JOB_KEYS=['job','jobs','isler','is','newjob','addjob','işlər','iş','yeni iş'];
-  function pageName(){
-    const keys=['currentPage','currentSection','activePage','page','activeSection','currentView'];
-    for(const k of keys){try{if(typeof window[k]==='string'&&window[k]) return window[k].toLowerCase();}catch(e){}}
-    const el=document.querySelector('[data-page].active,[data-section].active,.nav-item.active,.menu-item.active');
-    if(el) return ((el.getAttribute('data-page')||el.getAttribute('data-section')||el.textContent||'')).toLowerCase();
-    return location.hash.toLowerCase();
+
+
+
+<script id="page-add-action">
+function pageAddAction(){
+  switch(current){
+    case 'home':
+    case 'jobs':
+      return openJob();
+    case 'expenses':
+      return openExpense();
+    case 'incomes':
+      if(typeof openIncome==='function') return openIncome();
+      break;
+    case 'debts':
+      if(typeof openDebt==='function') return openDebt();
+      break;
+    case 'personalExpenses':
+      if(typeof openPersonalExpense==='function') return openPersonalExpense();
+      break;
+    case 'personalIncomes':
+      if(typeof openPersonalIncome==='function') return openPersonalIncome();
+      break;
+    case 'customers':
+      if(typeof openCustomer==='function') return openCustomer();
+      break;
+    case 'notes':
+      if(typeof openNote==='function') return openNote();
+      break;
+    case 'jobCategories':
+      if(typeof openJobCategory==='function') return openJobCategory();
+      break;
   }
-  function allowed(){
-    const p=pageName();
-    if(!p) return false;
-    if(HOME_KEYS.some(k=>p.includes(k))) return true;
-    if(JOB_KEYS.some(k=>p.includes(k))) return true;
-    return false;
+}
+function updateTopAdd(){
+  const b=document.getElementById('topAddBtn');
+  if(!b)return;
+  const labels={
+    home:'+ İş',
+    jobs:'+ İş',
+    expenses:'+ Xərc',
+    incomes:'+ Gəlir',
+    debts:'+ Borc',
+    personalExpenses:'+ Şəxsi xərc',
+    personalIncomes:'+ Şəxsi gəlir',
+    customers:'+ Müştəri',
+    notes:'+ Qeyd',
+    jobCategories:'+ Kateqoriya'
+  };
+  if(labels[current]){
+    b.style.display='';
+    b.textContent=labels[current];
+  }else{
+    b.style.display='none';
   }
-  function update(){
-    const els=[...document.querySelectorAll('button,a,[role="button"],div')].filter(el=>{
-      const t=(el.innerText||el.textContent||'').trim();
-      const aria=(el.getAttribute('aria-label')||'')+' '+(el.getAttribute('title')||'');
-      return allowedText.test(t+' '+aria) && (t.length<80 || aria);
-    });
-    els.forEach(el=>{
-      const s=getComputedStyle(el);
-      const fixed=s.position==='fixed' || /fixed/i.test(el.getAttribute('style')||'');
-      if(fixed || /fab|float|add/i.test(el.id+' '+el.className)){
-        el.classList.toggle('fab-page-hidden',!allowed());
-      }
-    });
-  }
-  window.addEventListener('load',()=>setTimeout(update,300));
-  setInterval(update,700);
-  document.addEventListener('click',()=>setTimeout(update,80),true);
-  window.addEventListener('hashchange',()=>setTimeout(update,100));
-})();
+}
 </script>
 
 </body>
