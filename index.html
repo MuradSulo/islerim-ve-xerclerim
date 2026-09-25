@@ -77,6 +77,9 @@ if(!db) {
   db.jobTypes=db.jobTypes||[];
   db.personalCategories=db.personalCategories||[];
 }
+const DEFAULT_JOB_TYPES=['Kamera','Sığorta','İnternet','Krosna','Çap işləri','Dəvətnamə','Digər gəlir'];
+const existingJobTypes=(db.jobs||[]).map(x=>String(x.category||'').trim()).filter(Boolean);
+db.jobTypes=[...new Set([...(db.jobTypes||[]),...DEFAULT_JOB_TYPES,...existingJobTypes])];
 let current='home';
 
 const menu=[
@@ -84,7 +87,7 @@ const menu=[
 ['expenses','💸','Ayrı xərclər'],['incomes','💰','Gəlirlər'],['debts','📒','Borclar'],
 ['personalExpenses','🧾','Şəxsi xərclər'],['personalIncomes','💵','Şəxsi gəlirlər'],
 ['notes','✅','Qeydlər'],['reports','📈','Aylıq hesabat'],['workAnalysis','📊','İş analizi'],
-['personalAnalysis','👤','Şəxsi analiz'],['settings','⚙️','Ayarlar']
+['personalAnalysis','👤','Şəxsi analiz'],['jobCategories','🏷️','İş kateqoriyaları'],['settings','⚙️','Ayarlar']
 ];
 let backupHandle=null;
 const BACKUP_DB='islerim_backup_handle_v1';
@@ -277,6 +280,7 @@ function render(){
  if(current==='reports')return reports(c);
  if(current==='workAnalysis')return workAnalysis(c);
  if(current==='personalAnalysis')return personalAnalysis(c);
+ if(current==='jobCategories')return jobCategories(c);
  if(current==='settings')return settings(c);
 }
 function home(c){
@@ -285,6 +289,8 @@ function home(c){
  const mj=db.jobs.filter(x=>inReportRange(x.date,ms,me)), mi=db.incomes.filter(x=>inReportRange(x.date,ms,me)), mep=db.expenses.filter(x=>inReportRange(x.date,ms,me));
  const mIncome=sum(mj,x=>x.amount)+sum(mi,x=>x.amount), mCost=sum(mj,x=>x.cost), mNet=mIncome-mCost, mSeparate=sum(mep,x=>x.amount);
  const todayNotes=(db.notes||[]).filter(x=>x.date===today()).slice().sort((a,b)=>String(a.time||'').localeCompare(String(b.time||'')));
+ const aylar=['Yanvar','Fevral','Mart','Aprel','May','İyun','İyul','Avqust','Sentyabr','Oktyabr','Noyabr','Dekabr'];
+ const ayAdi=aylar[now.getMonth()]+' '+now.getFullYear();
  c.innerHTML=`<div class="panel" style="background:linear-gradient(135deg,#eef2ff,#faf5ff);border:0"><div style="font-size:13px;color:#6366f1;font-weight:800">📊 İŞLƏRİNİZİN İDARƏETMƏ MƏRKƏZİ</div><div style="font-size:22px;font-weight:800;margin-top:5px">Bugünkü vəziyyətiniz</div><div style="color:#64748b;margin-top:5px">Gəlir, xərc, işlər və borclar bir ekranda.</div></div>
  <div class="cards">
  <div class="card"><small>💰 Ümumi gəlir</small><div class="value green">${money(inc)}</div></div>
@@ -293,20 +299,18 @@ function home(c){
  <div class="card"><small>🧾 Alınacaq pul</small><div class="value orange">${money(recv)}</div></div></div>
  <div class="today-notes panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 style="margin:0">🔔 Bugünkü qeydlər</h2><button class="light" onclick="show('notes')">Bütün qeydlər</button></div>
  ${todayNotes.length?todayNotes.map(x=>`<div class="note-reminder"><b>${esc(x.text)}</b><div class="note-meta">👤 ${esc(x.customer||'Müştəri qeyd edilməyib')} &nbsp; 📞 ${esc(x.phone||'')} &nbsp; 🕒 ${esc(x.time||'Saat yoxdur')}</div></div>`).join(''):'<div class="empty">Bu gün üçün qeyd yoxdur.</div>'}</div>
- <div class="month-report panel"><h2>📅 Bu ayın hesabatı</h2><div class="mini">
+ <div class="month-report panel"><h2>📅 ${ayAdi} hesabatı</h2><div class="mini">
  <div class="mini-card"><small>Gəlir</small><div class="mini-value green">${money(mIncome)}</div></div>
  <div class="mini-card"><small>İş xərci</small><div class="mini-value red">${money(mCost)}</div></div>
  <div class="mini-card"><small>Xalis qazanc</small><div class="mini-value ${mNet>=0?'green':'red'}">${money(mNet)}</div></div>
  <div class="mini-card"><small>Ayrı xərclər</small><div class="mini-value red">${money(mSeparate)}</div></div></div>
  <div style="margin-top:10px;color:var(--muted);font-size:12px">${fmt(ms)} — ${fmt(me)} · ${mj.length} iş</div></div>
- <div class="panel" style="background:#fff7ed;border-color:#fed7aa"><div style="display:flex;justify-content:space-between;align-items:center"><div><b>💸 Ayrı xərclər</b><div style="color:#9a3412;font-size:13px;margin-top:4px">“Xərclər” bölməsinə yazılan məbləğlər iş xərci və işdən xalis qazanc hesabına daxil edilmir.</div></div><strong style="font-size:22px;color:#c2410c">${money(exp)}</strong></div></div>
- <div class="grid2"><div class="panel"><h2>🛠️ Son işlər</h2>${jobTable(db.jobs.slice().reverse().slice(0,6))}</div>
- <div class="panel"><h2>💸 Son xərclər</h2>${expenseTable(db.expenses.slice().reverse().slice(0,6))}</div></div>`;
+ <div class="panel" style="background:#fff7ed;border-color:#fed7aa"><div style="display:flex;justify-content:space-between;align-items:center"><div><b>💸 Ayrı xərclər</b><div style="color:#9a3412;font-size:13px;margin-top:4px">“Xərclər” bölməsinə yazılan məbləğlər iş xərci və işdən xalis qazanc hesabına daxil edilmir.</div></div><strong style="font-size:22px;color:#c2410c">${money(exp)}</strong></div></div>`;
 }
 function toolbar(placeholder,onadd,extra=''){return `<div class="toolbar"><input id="search" placeholder="${placeholder}" oninput="render()">${extra}<button class="primary" onclick="${onadd}">+ Əlavə et</button></div>`}
 function jobTable(arr){if(!arr.length)return'<div class="empty">Hələ iş əlavə edilməyib.</div>';return `<div class="tablewrap"><table><tr><th>Tarix</th><th>İş</th><th>Müştəri</th><th>İş məbləği</th><th>İş xərci</th><th>Xalis qazanc</th><th>Qalan</th><th>Status</th><th></th></tr>${arr.map(x=>`<tr><td>${fmt(x.date)}</td><td>${esc(x.name)}</td><td>${esc(x.customer)}</td><td>${money(x.amount)}</td><td class="red">${money(x.cost)}</td><td class="${Number(x.amount)-Number(x.cost)>=0?'green':'red'}">${money(Number(x.amount)-Number(x.cost))}</td><td>${money(Number(x.amount)-Number(x.paid))}</td><td><span class="badge">${esc(x.status)}</span></td><td class="actions-cell"><button class="light" onclick="openJob('${x.id}')">✏️</button><button class="danger" onclick="del('jobs','${x.id}')">🗑️</button></td></tr>`).join('')}</table></div>`}
 function expenseTable(arr){if(!arr.length)return'<div class="empty">Hələ xərc əlavə edilməyib.</div>';return `<div class="tablewrap"><table><tr><th>Tarix</th><th>Kateqoriya</th><th>Məbləğ</th><th>Qeyd</th><th></th></tr>${arr.map(x=>`<tr><td>${fmt(x.date)}</td><td>${esc(x.category)}</td><td class="red">${money(x.amount)}</td><td>${esc(x.note)}</td><td><button class="light" onclick="openExpense('${x.id}')">✏️</button><button class="danger" onclick="del('expenses','${x.id}')">🗑️</button></td></tr>`).join('')}</table></div>`}
-function jobs(c){let q=(document.getElementById('search')?.value||'').toLowerCase();let arr=db.jobs.filter(x=>(x.name+x.customer+x.phone+x.status).toLowerCase().includes(q));c.innerHTML=toolbar('İş, müştəri və ya telefon axtar...','openJob()')+jobTable(arr)}
+function jobs(c){let q=(document.getElementById('search')?.value||'').toLowerCase();let arr=db.jobs.filter(x=>(x.name+x.customer+x.phone+x.status+x.category).toLowerCase().includes(q));c.innerHTML=toolbar('İş, müştəri, telefon və ya kateqoriya axtar...','openJob()')+jobTable(arr)}
 function expenses(c){let q=(document.getElementById('search')?.value||'').toLowerCase();let arr=db.expenses.filter(x=>(x.category+x.note).toLowerCase().includes(q));c.innerHTML=toolbar('Xərc axtar...','openExpense()')+expenseTable(arr)}
 function incomes(c){let q=(document.getElementById('search')?.value||'').toLowerCase();let arr=db.incomes.filter(x=>(x.source+x.note).toLowerCase().includes(q));c.innerHTML=toolbar('Gəlir axtar...','openIncome()')+`<div class="panel">${arr.length?`<table><tr><th>Tarix</th><th>Mənbə</th><th>Məbləğ</th><th>Qeyd</th><th></th></tr>${arr.map(x=>`<tr><td>${fmt(x.date)}</td><td>${esc(x.source)}</td><td class="green">${money(x.amount)}</td><td>${esc(x.note)}</td><td><button class="light" onclick="openIncome('${x.id}')">✏️</button><button class="danger" onclick="del('incomes','${x.id}')">🗑️</button></td></tr>`).join('')}</table>`:'<div class="empty">Hələ gəlir yoxdur.</div>'}</div>`}
 function debts(c){let q=(document.getElementById('search')?.value||'').toLowerCase();let arr=db.debts.filter(x=>(x.person+x.note).toLowerCase().includes(q));c.innerHTML=toolbar('Şəxs və ya qeyd axtar...','openDebt()')+`<div class="panel"><table><tr><th>Tip</th><th>Şəxs/Firma</th><th>Ümumi</th><th>Ödənilən</th><th>Qalan</th><th></th></tr>${arr.map(x=>`<tr><td>${x.type==='receive'?'Alınacaq':'Veriləcək'}</td><td>${esc(x.person)}</td><td>${money(x.amount)}</td><td>${money(x.paid)}</td><td class="${Number(x.amount)-Number(x.paid)>0?'orange':'green'}">${money(Number(x.amount)-Number(x.paid))}</td><td><button class="light" onclick="openDebt('${x.id}')">✏️</button><button class="danger" onclick="del('debts','${x.id}')">🗑️</button></td></tr>`).join('')}</table></div>`}
@@ -462,6 +466,31 @@ function reports(c){
    ${jj.length?jobTable(jj.slice().reverse()):'<div class="empty">Bu tarix aralığında iş yoxdur.</div>'}
  </div>`;
 }
+function jobCategories(c){
+ let arr=[...(db.jobTypes||[])];
+ c.innerHTML=`<div class="panel"><h2>🏷️ İş kateqoriyaları</h2>
+ <p style="color:var(--muted);margin-top:-5px">Yeni iş əlavə edərkən burada olan kateqoriyalardan seçim ediləcək.</p>
+ <div class="toolbar"><button class="primary" onclick="openJobCategory()">＋ Yeni kateqoriya</button></div>
+ ${arr.length?`<div class="tablewrap"><table><tr><th>Kateqoriya</th><th style="width:150px">Əməliyyat</th></tr>${arr.map((x,i)=>`<tr><td><span class="badge">${esc(x)}</span></td><td><button class="light" onclick="openJobCategory(${i})">✏️</button><button class="danger" onclick="deleteJobCategory(${i})">🗑️</button></td></tr>`).join('')}</table></div>`:'<div class="empty">Kateqoriya yoxdur.</div>'}
+ </div>`;
+}
+function openJobCategory(index){
+ const arr=db.jobTypes||[]; const old=index===undefined?'':arr[index]||'';
+ modal(index===undefined?'Yeni iş kateqoriyası':'Kateqoriyanı redaktə et',`<form onsubmit="saveJobCategory(event,${index===undefined?'null':index})"><div class="field"><label>Kateqoriya adı</label><input name="name" required maxlength=60 value="${esc(old)}" placeholder="Məs: Kamera"></div><br><button class="primary">Yadda saxla</button></form>`);
+}
+function saveJobCategory(e,index){
+ e.preventDefault(); const name=(new FormData(e.target).get('name')||'').toString().trim(); if(!name)return;
+ const arr=db.jobTypes||[]; const exists=arr.some((x,i)=>i!==index && x.toLowerCase()===name.toLowerCase());
+ if(exists){alert('Bu kateqoriya artıq mövcuddur.');return;}
+ if(index===null) arr.push(name); else { const old=arr[index]; arr[index]=name; (db.jobs||[]).forEach(j=>{if(j.category===old)j.category=name;}); }
+ db.jobTypes=[...new Set(arr)]; save(); closeModal(); render();
+}
+function deleteJobCategory(index){
+ const arr=db.jobTypes||[], name=arr[index]; if(!name)return;
+ const used=(db.jobs||[]).some(j=>j.category===name);
+ const msg=used?`"${name}" kateqoriyası ${db.jobs.filter(j=>j.category===name).length} işdə istifadə olunur. Silmək istəyirsiniz? Mövcud işlərdə kateqoriya adı qalacaq.`:`"${name}" kateqoriyası silinsin?`;
+ if(!confirm(msg))return; arr.splice(index,1); db.jobTypes=arr; save(); render();
+}
 function settings(c){c.innerHTML=`<div class="panel"><h2>⚙️ Ayarlar</h2>
 <div style="padding:12px 14px;background:#eef2ff;border-radius:10px;margin-bottom:14px;color:#3730a3"><b>📥 Excel məlumatları köçürüldü.</b><br>İşlər, iş xərcləri, ayrıca xərclər, şəxsi xərclər, şəxsi gəlirlər və borclar proqrama əlavə olunub.</div>
 <div style="padding:14px;background:#eefdf7;border:1px solid #bbf7d0;border-radius:12px;margin-bottom:15px">
@@ -483,7 +512,7 @@ function openJob(id){let x=db.jobs.find(a=>a.id===id)||{};modal(id?'İşi redakt
 <div class="field"><label>Telefon</label><input name="phone" value="${esc(x.phone)}"></div><div class="field"><label>Tarix</label><input type="date" name="date" value="${x.date||today()}"></div>
 <div class="field"><label>İşin məbləği (₼)</label><input type="number" step="0.01" min="0" name="amount" required value="${x.amount??''}"></div><div class="field"><label>İş xərci (₼)</label><input type="number" step="0.01" min="0" name="cost" value="${x.cost??0}" placeholder="Material, yol və s."></div>
 <div class="field"><label>Alınan məbləğ (₼)</label><input type="number" step="0.01" min="0" name="paid" value="${x.paid??0}"></div>
-<div class="field"><label>Status</label><select name="status">${['Gözləyir','Davam edir','Tamamlandı','Ləğv edildi'].map(s=>`<option ${x.status===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="field"><label>Kateqoriya</label><input name="category" value="${esc(x.category)}" placeholder="Məs: Kamera quraşdırılması"></div>
+<div class="field"><label>Status</label><select name="status">${['Gözləyir','Davam edir','Tamamlandı','Ləğv edildi'].map(s=>`<option ${x.status===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="field"><label>Kateqoriya</label><select name="category" required><option value="">Kateqoriya seçin</option>${(db.jobTypes||[]).map(s=>`<option value="${esc(s)}" ${x.category===s?'selected':''}>${esc(s)}</option>`).join('')}</select></div>
 <div class="field full"><label>Qeyd</label><textarea name="note">${esc(x.note)}</textarea></div></div><br><button class="primary">Yadda saxla</button></form>`)}
 function saveJob(e,id){e.preventDefault();let f=new FormData(e.target),o=Object.fromEntries(f);o.id=id||Date.now().toString();o.amount=+o.amount;o.cost=+o.cost||0;o.paid=+o.paid||0;o.created=o.created||new Date().toISOString();let i=db.jobs.findIndex(x=>x.id===o.id);if(i>=0)db.jobs[i]=o;else db.jobs.push(o);save();closeModal();render()}
 const cats=['Yanacaq','Yemək','Yol','Material','Avadanlıq','Mağaza','Telefon/İnternet','Kommunal','Şəxsi','Digər'];
