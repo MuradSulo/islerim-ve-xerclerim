@@ -22,7 +22,7 @@ button,.btn{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-we
 .panel{background:rgba(255,255,255,.94);border:1px solid rgba(226,232,240,.95);border-radius:18px;padding:20px;margin-bottom:18px;box-shadow:var(--shadow)}.panel h2{font-size:18px;margin:0 0 15px;letter-spacing:-.2px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;font-size:14px}th{color:var(--muted);font-size:12px}.badge{padding:6px 10px;border-radius:999px;font-size:12px;background:#eef2ff;color:#4338ca;font-weight:700}.empty{padding:30px;text-align:center;color:var(--muted)}
 .formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:600}.field input,.field select,.field textarea{padding:12px;border:1px solid #d7dce5;border-radius:10px;font:inherit;background:white;outline:none;transition:.2s}.field input:focus,.field select:focus,.field textarea:focus{border-color:#818cf8;box-shadow:0 0 0 3px rgba(99,102,241,.1)}.field textarea{min-height:80px;resize:vertical}.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:20px;z-index:100}.modal.show{display:flex}.modalbox{background:#fff;width:min(650px,100%);max-height:90vh;overflow:auto;border-radius:15px;padding:20px}.modalhead{display:flex;justify-content:space-between;align-items:center}.close{background:transparent;font-size:24px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.toolbar input,.toolbar select{padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;outline:none}.actions-cell button{padding:6px 8px;margin-right:4px}
-.bottom{display:none}.mobileSheet{display:none}
+.bottom{display:none}.mobileSheet{display:none}.refreshBtn{position:fixed;right:18px;top:14px;z-index:90;width:46px;height:46px;border-radius:50%;padding:0;font-size:21px;display:grid;place-items:center;background:#fff;color:#4f46e5;border:1px solid #e5e7eb;box-shadow:0 8px 22px rgba(15,23,42,.15)}.refreshBtn:active{transform:scale(.95)}@media(max-width:900px){.refreshBtn{top:12px;right:12px;width:44px;height:44px;font-size:20px;z-index:85}}
 @media(max-width:900px){.modal{z-index:100;align-items:flex-start;padding:58px 12px calc(90px + env(safe-area-inset-bottom));overflow:auto}.modalbox{width:100%;max-height:calc(100vh - 150px);overflow-y:auto;border-radius:20px;padding:18px 16px 24px;margin:0}.modalbox form{padding-bottom:4px}.modalbox form > .primary:last-child{width:100%;min-height:50px;font-size:16px}.modalhead{position:sticky;top:0;background:#fff;z-index:2;padding-bottom:10px;margin-bottom:8px}.mobilePlus{z-index:21}.side{display:none}.main{margin:0;width:100%;padding:15px;padding-bottom:86px}.cards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.bottom{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;bottom:0;left:0;right:0;background:rgba(17,24,39,.98);padding:6px 4px calc(6px + env(safe-area-inset-bottom));z-index:20;box-shadow:0 -8px 25px rgba(0,0,0,.16)}.bottom button{background:transparent;color:#cbd5e1;font-size:10px;padding:6px 2px;border-radius:10px;line-height:1.2}.bottom button.active{background:rgba(99,102,241,.28);color:#fff}.mobileSheet{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:30;align-items:flex-end}.mobileSheet.show{display:flex}.sheetBox{background:#fff;width:100%;border-radius:22px 22px 0 0;padding:16px 14px calc(18px + env(safe-area-inset-bottom));max-height:78vh;overflow:auto;box-shadow:0 -15px 40px rgba(0,0,0,.2)}.sheetHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.sheetHead h3{margin:0;font-size:18px}.sheetClose{background:#f1f5f9;border-radius:50%;width:36px;height:36px;padding:0;font-size:22px}.sheetGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.sheetGrid button{background:#f8fafc;border:1px solid #e5e7eb;color:#1f2937;padding:12px 6px;border-radius:14px;font-size:11px;min-height:62px}.sheetGrid button.active{background:#eef2ff;border-color:#818cf8;color:#4338ca}.mobilePlus{position:fixed;right:16px;bottom:78px;z-index:21;width:54px;height:54px;border-radius:50%;font-size:25px;padding:0}.formgrid{grid-template-columns:1fr}}
 @media(max-width:500px){.cards{grid-template-columns:1fr 1fr}.top{align-items:flex-start;gap:10px}.top h1{font-size:20px}.actions .light{display:none}.sheetGrid{grid-template-columns:repeat(3,1fr)}}
 
@@ -38,7 +38,7 @@ button,.btn{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-we
 <div class="top"><h1 id="pageTitle">Ana səhifə</h1><div class="actions"><button class="primary" onclick="openJob()">+ İş</button><button class="light" onclick="openExpense()">+ Xərc</button></div></div>
 <div id="content"></div>
 </main>
-<div class="bottom" id="bottomNav"></div><button class="primary mobilePlus" onclick="openJob()">+</button><div class="mobileSheet" id="mobileSheet" onclick="if(event.target===this)toggleMobileMenu(false)"><div class="sheetBox"><div class="sheetHead"><h3>☰ Bütün bölmələr</h3><button class="sheetClose" onclick="toggleMobileMenu(false)">×</button></div><div class="sheetGrid" id="sheetGrid"></div></div></div>
+<button class="refreshBtn" id="refreshBtn" onclick="refreshApp()" title="Proqramı yenilə" aria-label="Proqramı yenilə">🔄</button><div class="bottom" id="bottomNav"></div><button class="primary mobilePlus" onclick="openJob()">+</button><div class="mobileSheet" id="mobileSheet" onclick="if(event.target===this)toggleMobileMenu(false)"><div class="sheetBox"><div class="sheetHead"><h3>☰ Bütün bölmələr</h3><button class="sheetClose" onclick="toggleMobileMenu(false)">×</button></div><div class="sheetGrid" id="sheetGrid"></div></div></div>
 </div>
 
 <div class="modal" id="modal"><div class="modalbox"><div class="modalhead"><h2 id="modalTitle"></h2><button class="close" onclick="closeModal()">×</button></div><div id="modalBody"></div></div></div>
@@ -100,9 +100,9 @@ let current='home';
 
 const menu=[
 ['home','🏠','Ana səhifə'],['jobs','🛠️','İşlər'],['customers','👥','Müştərilər'],
-['expenses','💸','Ayrı xərclər'],['incomes','💰','Gəlirlər'],['debts','📒','Borclar'],
+['expenses','💸','Ayrı xərclər'],['debts','📒','Borclar'],
 ['personalExpenses','🧾','Şəxsi xərclər'],['personalIncomes','💵','Şəxsi gəlirlər'],
-['notes','✅','Qeydlər'],['reports','📈','Aylıq hesabat'],['workAnalysis','📊','İş analizi'],
+['notes','✅','Qeydlər'],['reports','📈','Aylıq hesabat'],
 ['personalAnalysis','👤','Şəxsi analiz'],['jobCategories','🏷️','İş kateqoriyaları'],['settings','⚙️','Ayarlar']
 ];
 let backupHandle=null;
@@ -289,6 +289,10 @@ function today(){return new Date().toISOString().slice(0,10)}
 function fmt(d){if(!d)return'';let [y,m,day]=d.split('-');return `${day}.${m}.${y}`}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function sum(a,f){return a.reduce((x,y)=>x+Number(f(y)||0),0)}
+function refreshApp(){
+  try{ localStorage.setItem("gxc_last_refresh", String(Date.now())); }catch(e){}
+  location.reload();
+}
 function nav(){let h=menu.map(x=>`<button class="${current===x[0]?'active':''}" onclick="show('${x[0]}')">${x[1]} ${x[2]}</button>`).join('');document.getElementById('nav').innerHTML=h;const quick=[['home','🏠','Ana səhifə'],['jobs','🛠️','İşlər'],['customers','👥','Müştərilər'],['reports','📈','Hesabat'],['more','☰','Daha çox']];document.getElementById('bottomNav').innerHTML=quick.map(x=>x[0]==='more'?`<button onclick="toggleMobileMenu(true)">${x[1]}<br>${x[2]}</button>`:`<button class="${current===x[0]?'active':''}" onclick="show('${x[0]}')">${x[1]}<br>${x[2]}</button>`).join('');document.getElementById('sheetGrid').innerHTML=menu.map(x=>`<button class="${current===x[0]?'active':''}" onclick="show('${x[0]}')">${x[1]}<br>${x[2]}</button>`).join('')}
 function toggleMobileMenu(v){document.getElementById('mobileSheet').classList.toggle('show',v)}
 function show(p){current=p;toggleMobileMenu(false);nav();document.getElementById('pageTitle').textContent=menu.find(x=>x[0]===p)?.[2]||'';render()}
@@ -304,7 +308,6 @@ function render(){
  if(current==='customers')return customers(c);
  if(current==='notes')return notes(c);
  if(current==='reports')return reports(c);
- if(current==='workAnalysis')return workAnalysis(c);
  if(current==='personalAnalysis')return personalAnalysis(c);
  if(current==='jobCategories')return jobCategories(c);
  if(current==='settings')return settings(c);
@@ -518,6 +521,49 @@ function reports(c){
    ${jj.length?jobTable(jj.slice().reverse()):'<div class="empty">Bu tarix aralığında iş yoxdur.</div>'}
  </div>`;
 }
+function personalAnalysis(c){
+  const preset=document.getElementById('paPreset')?.value||'month';
+  const now=new Date();
+  let start='',end=localISODate(now);
+  if(preset==='day') start=end;
+  else if(preset==='week'){
+    const d=new Date(now); const day=d.getDay(); const diff=day===0?-6:1-day;
+    d.setDate(d.getDate()+diff); start=localISODate(d);
+  } else if(preset==='lastmonth'){
+    start=localISODate(new Date(now.getFullYear(),now.getMonth()-1,1));
+    end=localISODate(new Date(now.getFullYear(),now.getMonth(),0));
+  } else start=localISODate(new Date(now.getFullYear(),now.getMonth(),1));
+
+  const incomes=(db.personalIncomes||[]).filter(x=>inReportRange(x.date,start,end));
+  const expenses=(db.personalExpenses||[]).filter(x=>inReportRange(x.date,start,end));
+  const totalIn=sum(incomes,x=>x.amount), totalOut=sum(expenses,x=>x.amount), balance=totalIn-totalOut;
+  const cats={};
+  expenses.forEach(x=>{const k=x.category||'Digər'; cats[k]=(cats[k]||0)+Number(x.amount||0)});
+  const rows=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<tr><td>${esc(k)}</td><td class="red">${money(v)}</td><td>${totalOut?Math.round(v/totalOut*100):0}%</td></tr>`).join('');
+
+  c.innerHTML=`
+  <div class="panel">
+    <h2>👤 Şəxsi analiz</h2>
+    <div class="toolbar">
+      <select id="paPreset" onchange="render()">
+        <option value="day" ${preset==='day'?'selected':''}>Bugün</option>
+        <option value="week" ${preset==='week'?'selected':''}>Bu həftə</option>
+        <option value="month" ${preset==='month'?'selected':''}>Bu ay</option>
+        <option value="lastmonth" ${preset==='lastmonth'?'selected':''}>Ötən ay</option>
+      </select>
+    </div>
+    <div class="stats">
+      <div class="stat"><span>💵 Şəxsi gəlir</span><b class="green">${money(totalIn)}</b></div>
+      <div class="stat"><span>🧾 Şəxsi xərc</span><b class="red">${money(totalOut)}</b></div>
+      <div class="stat"><span>💰 Qalan məbləğ</span><b class="${balance>=0?'green':'red'}">${money(balance)}</b></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>📊 Xərclərin kateqoriyalar üzrə bölgüsü</h3>
+    ${rows?`<table><tr><th>Kateqoriya</th><th>Məbləğ</th><th>Pay</th></tr>${rows}</table>`:'<div class="empty">Bu tarix aralığında şəxsi xərc yoxdur.</div>'}
+  </div>`;
+}
+
 function jobCategories(c){
  let arr=[...(db.jobTypes||[])];
  c.innerHTML=`<div class="panel"><h2>🏷️ İş kateqoriyaları</h2>
