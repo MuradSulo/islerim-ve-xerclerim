@@ -1,1 +1,519 @@
 
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>İşlərim və Xərclərim</title>
+<style>
+:root{--bg:#f5f7fb;--card:#ffffff;--text:#17202a;--muted:#718096;--line:#e7ebf2;--primary:#4f46e5;--primary2:#7c3aed;--danger:#ef4444;--green:#10b981;--orange:#f59e0b;--shadow:0 10px 30px rgba(31,41,55,.07)}
+*{scrollbar-width:thin;scrollbar-color:#cbd5e1 transparent}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+.app{display:flex;min-height:100vh;background:linear-gradient(135deg,#f8fafc 0%,#eef2ff 100%)}.side{width:250px;background:linear-gradient(180deg,#111827,#1e1b4b);color:#fff;padding:22px 16px;position:fixed;height:100vh;box-shadow:10px 0 35px rgba(15,23,42,.12);z-index:4;overflow-y:auto}
+.logo{font-size:19px;font-weight:800;margin:4px 8px 28px;letter-spacing:-.3px}.logo:after{content:'Gündəlik idarəetmə';display:block;font-size:11px;font-weight:400;color:#a5b4fc;margin-top:5px}.nav button{width:100%;padding:12px 14px;border:0;background:transparent;color:#cbd5e1;text-align:left;border-radius:11px;margin:4px 0;cursor:pointer;font-size:14px;transition:.2s}.nav button.active,.nav button:hover{background:linear-gradient(90deg,rgba(99,102,241,.28),rgba(124,58,237,.18));color:#fff;transform:translateX(2px)}
+.main{margin-left:250px;width:calc(100% - 250px);padding:30px;max-width:1600px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.top h1{margin:0;font-size:28px;letter-spacing:-.7px}.actions{display:flex;gap:9px}
+button,.btn{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:700;transition:.2s}.primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:white;box-shadow:0 7px 18px rgba(79,70,229,.22)}.primary:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(79,70,229,.28)}.danger{background:var(--danger);color:white}.light{background:#fff;border:1px solid var(--line)}button:hover{filter:brightness(.98)}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}.card{background:rgba(255,255,255,.9);border:1px solid rgba(226,232,240,.9);border-radius:18px;padding:20px;box-shadow:var(--shadow);position:relative;overflow:hidden}.card:after{content:'';position:absolute;right:-25px;top:-25px;width:90px;height:90px;border-radius:50%;background:rgba(99,102,241,.08)}.card small{color:var(--muted);font-weight:600}.value{font-size:26px;font-weight:800;margin-top:9px}.green{color:var(--green)}.red{color:var(--danger)}.orange{color:var(--orange)}
+.panel{background:rgba(255,255,255,.94);border:1px solid rgba(226,232,240,.95);border-radius:18px;padding:20px;margin-bottom:18px;box-shadow:var(--shadow)}.panel h2{font-size:18px;margin:0 0 15px;letter-spacing:-.2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;font-size:14px}th{color:var(--muted);font-size:12px}.badge{padding:6px 10px;border-radius:999px;font-size:12px;background:#eef2ff;color:#4338ca;font-weight:700}.empty{padding:30px;text-align:center;color:var(--muted)}
+.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:600}.field input,.field select,.field textarea{padding:12px;border:1px solid #d7dce5;border-radius:10px;font:inherit;background:white;outline:none;transition:.2s}.field input:focus,.field select:focus,.field textarea:focus{border-color:#818cf8;box-shadow:0 0 0 3px rgba(99,102,241,.1)}.field textarea{min-height:80px;resize:vertical}.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:20px;z-index:10}.modal.show{display:flex}.modalbox{background:#fff;width:min(650px,100%);max-height:90vh;overflow:auto;border-radius:15px;padding:20px}.modalhead{display:flex;justify-content:space-between;align-items:center}.close{background:transparent;font-size:24px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.toolbar input,.toolbar select{padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;outline:none}.actions-cell button{padding:6px 8px;margin-right:4px}
+.bottom{display:none}.mobileSheet{display:none}
+@media(max-width:900px){.side{display:none}.main{margin:0;width:100%;padding:15px;padding-bottom:86px}.cards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.bottom{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;bottom:0;left:0;right:0;background:rgba(17,24,39,.98);padding:6px 4px calc(6px + env(safe-area-inset-bottom));z-index:20;box-shadow:0 -8px 25px rgba(0,0,0,.16)}.bottom button{background:transparent;color:#cbd5e1;font-size:10px;padding:6px 2px;border-radius:10px;line-height:1.2}.bottom button.active{background:rgba(99,102,241,.28);color:#fff}.mobileSheet{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:30;align-items:flex-end}.mobileSheet.show{display:flex}.sheetBox{background:#fff;width:100%;border-radius:22px 22px 0 0;padding:16px 14px calc(18px + env(safe-area-inset-bottom));max-height:78vh;overflow:auto;box-shadow:0 -15px 40px rgba(0,0,0,.2)}.sheetHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.sheetHead h3{margin:0;font-size:18px}.sheetClose{background:#f1f5f9;border-radius:50%;width:36px;height:36px;padding:0;font-size:22px}.sheetGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.sheetGrid button{background:#f8fafc;border:1px solid #e5e7eb;color:#1f2937;padding:12px 6px;border-radius:14px;font-size:11px;min-height:62px}.sheetGrid button.active{background:#eef2ff;border-color:#818cf8;color:#4338ca}.mobilePlus{position:fixed;right:16px;bottom:78px;z-index:21;width:54px;height:54px;border-radius:50%;font-size:25px;padding:0}.formgrid{grid-template-columns:1fr}}
+@media(max-width:500px){.cards{grid-template-columns:1fr 1fr}.top{align-items:flex-start;gap:10px}.top h1{font-size:20px}.actions .light{display:none}.sheetGrid{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side"><div class="logo">📊 İşlərim və Xərclərim</div><div class="nav" id="nav"></div></aside>
+<main class="main">
+<div class="top"><h1 id="pageTitle">Ana səhifə</h1><div class="actions"><button class="primary" onclick="openJob()">+ İş</button><button class="light" onclick="openExpense()">+ Xərc</button></div></div>
+<div id="content"></div>
+</main>
+<div class="bottom" id="bottomNav"></div><button class="primary mobilePlus" onclick="openJob()">+</button><div class="mobileSheet" id="mobileSheet" onclick="if(event.target===this)toggleMobileMenu(false)"><div class="sheetBox"><div class="sheetHead"><h3>☰ Bütün bölmələr</h3><button class="sheetClose" onclick="toggleMobileMenu(false)">×</button></div><div class="sheetGrid" id="sheetGrid"></div></div></div>
+</div>
+
+<div class="modal" id="modal"><div class="modalbox"><div class="modalhead"><h2 id="modalTitle"></h2><button class="close" onclick="closeModal()">×</button></div><div id="modalBody"></div></div></div>
+
+<script>
+const SUPABASE_URL="https://oxgtrsthnsuvzcfckcvo.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_rL1hItSelv3HplyPvOJq7g_8M6v4f7f";
+let supabaseClient=null;
+let supabaseLoadPromise=null;
+function loadSupabaseLibrary(){
+  if(window.supabase){
+    supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+    return Promise.resolve(supabaseClient);
+  }
+  if(supabaseLoadPromise) return supabaseLoadPromise;
+  supabaseLoadPromise=new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+    s.onload=()=>{try{supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});resolve(supabaseClient)}catch(e){reject(e)}};
+    s.onerror=()=>{
+      const s2=document.createElement('script');
+      s2.src='https://unpkg.com/@supabase/supabase-js@2';
+      s2.onload=()=>{try{supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});resolve(supabaseClient)}catch(e){reject(e)}};
+      s2.onerror=()=>reject(new Error('Supabase kitabxanası yüklənmədi'));
+      document.head.appendChild(s2);
+    };
+    document.head.appendChild(s);
+  });
+  return supabaseLoadPromise;
+}
+let cloudSyncTimer=null;
+let cloudSyncBusy=false;
+let cloudChannel=null;
+
+const KEY='islerim_xerclerim_v1';
+const IMPORTED_DATA={"jobs":[{"id":"import-job-1","date":"2026-08-28","name":"kamera şifrə bərpa","customer":"Suleyman","phone":"","amount":10.0,"cost":0.0,"paid":10.0,"status":"Tamamlandı","category":"Kamera","note":""},{"id":"import-job-2","date":"2026-08-29","name":"S/T","customer":"Seyid + adam","phone":"","amount":15.0,"cost":0.0,"paid":15.0,"status":"Tamamlandı","category":"Sığorta","note":""},{"id":"import-job-3","date":"2026-08-29","name":"Paralel internet","customer":"Şaban mehdiyev","phone":"","amount":65.0,"cost":45.0,"paid":65.0,"status":"Tamamlandı","category":"İnternet","note":""},{"id":"import-job-4","date":"2026-08-29","name":"Kabel","customer":"Nasrullah","phone":"","amount":5.0,"cost":0.0,"paid":5.0,"status":"Tamamlandı","category":"Krosna","note":""},{"id":"import-job-5","date":"2026-09-03","name":"T","customer":"Elşad","phone":"","amount":10.0,"cost":0.0,"paid":10.0,"status":"Tamamlandı","category":"Sığorta","note":""},{"id":"import-job-6","date":"2026-09-05","name":"Şəkil 3x4","customer":"","phone":"","amount":5.0,"cost":0.0,"paid":5.0,"status":"Tamamlandı","category":"Çap işləri","note":""},{"id":"import-job-7","date":"2026-09-05","name":"Reklam","customer":"Şəfi","phone":"","amount":10.0,"cost":0.0,"paid":10.0,"status":"Tamamlandı","category":"Çap işləri","note":""},{"id":"import-job-8","date":"2026-09-06","name":"Dəvət çapi","customer":"Axmed Qurqunayev","phone":"","amount":62.0,"cost":20.0,"paid":62.0,"status":"Tamamlandı","category":"Dəvətnamə","note":""},{"id":"import-job-9","date":"2026-09-08","name":"p abc","customer":"Murad Makarov","phone":"","amount":30.0,"cost":0.0,"paid":30.0,"status":"Tamamlandı","category":"Sığorta","note":""},{"id":"import-job-10","date":"2026-09-09","name":"Nömre bir döner endirimli quraşdirma","customer":"Şamil","phone":"","amount":50.0,"cost":0.0,"paid":50.0,"status":"Tamamlandı","category":"Kamera","note":""},{"id":"import-job-11","date":"2026-09-10","name":"`","customer":"Şahin","phone":"","amount":63.0,"cost":20.0,"paid":63.0,"status":"Tamamlandı","category":"Dəvətnamə","note":""},{"id":"import-job-12","date":"2026-09-10","name":"Quraşdırma","customer":"İsmayıl müəlim","phone":"","amount":27.0,"cost":0.0,"paid":27.0,"status":"Tamamlandı","category":"Kamera","note":""},{"id":"import-job-13","date":"2026-09-10","name":"İp kanal","customer":"Maqa","phone":"","amount":5.0,"cost":0.0,"paid":5.0,"status":"Tamamlandı","category":"Krosna","note":""},{"id":"import-job-14","date":"2026-09-10","name":"Hdd dəyişmə","customer":"Mixo k ","phone":"","amount":15.0,"cost":0.0,"paid":15.0,"status":"Tamamlandı","category":"Kamera","note":""},{"id":"import-job-15","date":"2026-09-12","name":"Tex","customer":"","phone":"","amount":10.0,"cost":0.0,"paid":10.0,"status":"Tamamlandı","category":"Sığorta","note":""},{"id":"import-job-16","date":"2026-09-12","name":"Pult","customer":"Hüşəm","phone":"","amount":10.0,"cost":5.0,"paid":10.0,"status":"Tamamlandı","category":"Krosna","note":""},{"id":"import-job-17","date":"2026-09-13","name":"P. Ad + cerimə ödeme","customer":"Toholiyov+eldar","phone":"","amount":30.0,"cost":0.0,"paid":30.0,"status":"Tamamlandı","category":"Sığorta","note":""},{"id":"import-job-18","date":"2026-09-13","name":"Sigorta","customer":"Qurban kamal","phone":"","amount":5.0,"cost":0.0,"paid":5.0,"status":"Tamamlandı","category":"Sığorta","note":""},{"id":"import-job-19","date":"2026-09-13","name":"Fleska yazma","customer":"Ali aliyev","phone":"","amount":20.0,"cost":8.0,"paid":20.0,"status":"Tamamlandı","category":"Digər gəlir","note":""},{"id":"import-job-20","date":"2026-09-14","name":"Quraşdırma","customer":"Calil pasan","phone":"","amount":20.0,"cost":0.0,"paid":20.0,"status":"Tamamlandı","category":"Kamera","note":""},{"id":"import-job-21","date":"2026-09-14","name":"Ip tv ","customer":"Basir bilal","phone":"","amount":10.0,"cost":0.0,"paid":10.0,"status":"Tamamlandı","category":"Krosna","note":""},{"id":"import-job-22","date":"2026-09-16","name":"Tex","customer":"Qurban kamal","phone":"","amount":10.0,"cost":0.0,"paid":10.0,"status":"Tamamlandı","category":"Sığorta","note":""},{"id":"import-job-23","date":"2026-09-17","name":"Fleska yazma","customer":"Momunet","phone":"","amount":15.0,"cost":7.0,"paid":15.0,"status":"Tamamlandı","category":"Digər gəlir","note":""},{"id":"import-job-24","date":"2026-09-19","name":"Çap işləri","customer":"Məktəbli 1 nomre","phone":"","amount":40.0,"cost":7.0,"paid":40.0,"status":"Tamamlandı","category":"Çap işləri","note":""},{"id":"import-job-25","date":"2026-09-20","name":"Siq ","customer":"Murad serov ","phone":"","amount":10.0,"cost":0.0,"paid":10.0,"status":"Tamamlandı","category":"Sığorta","note":""},{"id":"import-job-26","date":"2026-09-20","name":"Kanal yiğma","customer":"Şamil","phone":"","amount":10.0,"cost":0.0,"paid":10.0,"status":"Tamamlandı","category":"Krosna","note":""},{"id":"import-job-27","date":"2026-09-20","name":"Kod","customer":"Sapar","phone":"","amount":20.0,"cost":0.0,"paid":20.0,"status":"Tamamlandı","category":"Kamera","note":""},{"id":"import-job-28","date":"2026-09-20","name":"Sığorta","customer":"serov","phone":"","amount":5.0,"cost":0.0,"paid":5.0,"status":"Tamamlandı","category":"Sığorta","note":""},{"id":"import-job-29","date":"2026-09-21","name":"çap","customer":"arzuman","phone":"","amount":50.0,"cost":17.0,"paid":50.0,"status":"Tamamlandı","category":"Dəvətnamə","note":""},{"id":"import-job-30","date":"2026-09-21","name":"tex","customer":"Suleyman","phone":"","amount":5.0,"cost":0.0,"paid":5.0,"status":"Tamamlandı","category":"Sığorta","note":""},{"id":"import-job-31","date":"2026-09-21","name":"roter sazlama","customer":"ibad","phone":"","amount":10.0,"cost":0.0,"paid":10.0,"status":"Tamamlandı","category":"İnternet","note":""},{"id":"import-job-32","date":"2026-09-23","name":"aylıq komisiya","customer":"ateskah","phone":"","amount":62.0,"cost":0.0,"paid":62.0,"status":"Tamamlandı","category":"Sığorta","note":""},{"id":"import-job-33","date":"2026-09-23","name":"Paralel internet","customer":"axmed adiyev","phone":"","amount":8.0,"cost":0.0,"paid":8.0,"status":"Tamamlandı","category":"İnternet","note":""},{"id":"import-job-34","date":"2026-09-23","name":"Çap işləri","customer":"Məktəbli 1 nomre","phone":"","amount":15.0,"cost":0.0,"paid":15.0,"status":"Tamamlandı","category":"Çap işləri","note":""},{"id":"import-job-35","date":"2026-09-24","name":"internet,tv asmaq,krosno düzəltmək","customer":"nurullah","phone":"","amount":40.0,"cost":0.0,"paid":40.0,"status":"Tamamlandı","category":"İnternet","note":""},{"id":"import-job-36","date":"2026-09-25","name":"kopya","customer":"məktəb","phone":"","amount":2.0,"cost":0.0,"paid":2.0,"status":"Tamamlandı","category":"Çap işləri","note":""}],"expenses":[{"id":"import-Xərclər-1","date":"2026-09-08","category":"Kağız+Konvert","amount":76.0,"note":"Keçen ayın borcu"},{"id":"import-Xərclər-2","date":"2026-09-10","category":"Digər","amount":290.0,"note":"Adapter. Başlıq kabel"}],"incomes":[],"debts":[{"id":"import-debt-1","date":"2026-08-23","person":"Maqa Nuhiyev","type":"pay","amount":130.0,"paid":100.0,"note":"","due":""},{"id":"import-debt-2","date":"2026-05-15","person":"Murad Xalayev","type":"receive","amount":50.0,"paid":0.0,"note":"","due":""},{"id":"import-debt-3","date":"2026-05-01","person":"Hamid Şabanov","type":"receive","amount":20.0,"paid":0.0,"note":"","due":""},{"id":"import-debt-4","date":"2026-06-01","person":"Dj Rasul","type":"receive","amount":150.0,"paid":150.0,"note":"","due":""}],"notes":[],"customers":[],"personalExpenses":[{"id":"import-Şəxsi xərclər-1","date":"2026-08-29","category":"Ərzaq","amount":2.7,"note":"Limon+Soyuq çay"},{"id":"import-Şəxsi xərclər-2","date":"2026-08-30","category":"Ev","amount":25.0,"note":"Həyət çalmaq"},{"id":"import-Şəxsi xərclər-3","date":"2026-09-01","category":"Digər","amount":50.0,"note":"Alinin oğluna hədiyyə"},{"id":"import-Şəxsi xərclər-4","date":"2026-09-01","category":"Ərzaq","amount":25.0,"note":""},{"id":"import-Şəxsi xərclər-5","date":"2026-09-02","category":"Əyləncə","amount":20.0,"note":"Pivə"},{"id":"import-Şəxsi xərclər-6","date":"2026-09-05","category":"Şəxsi yanacaq","amount":40.0,"note":"20kia 20 pajero"},{"id":"import-Şəxsi xərclər-7","date":"2026-09-05","category":"Kafe yemək","amount":20.0,"note":"Aura kafe Maqa Nuhiyevlə"},{"id":"import-Şəxsi xərclər-8","date":"2026-09-11","category":"Sağlamlıq","amount":40.0,"note":"Qulaq hekime"},{"id":"import-Şəxsi xərclər-9","date":"2026-09-11","category":"Ev","amount":15.0,"note":"Pampres"}],"personalIncomes":[{"id":"import-pinc-1","date":"2026-08-28","source":"Digər","amount":113.0,"note":"Vibdə olan pul"}],"jobTypes":["Kamera","Dəvətnamə","Sığorta","İnternet","Krosna","Digər gəlir","Çap işləri"],"personalCategories":["Ərzaq","Ev","Kommunal","Şəxsi yanacaq","Geyim","Sağlamlıq","Əyləncə","Digər","Kafe yemək"]};
+let db=JSON.parse(localStorage.getItem(KEY)||'null');
+if(!db) {
+  db=JSON.parse(JSON.stringify(IMPORTED_DATA));
+  localStorage.setItem(KEY,JSON.stringify(db));
+} else {
+  db.personalExpenses=db.personalExpenses||[];
+  db.personalIncomes=db.personalIncomes||[];
+  db.jobTypes=db.jobTypes||[];
+  db.personalCategories=db.personalCategories||[];
+}
+let current='home';
+
+const menu=[
+['home','🏠','Ana səhifə'],['jobs','🛠️','İşlər'],['customers','👥','Müştərilər'],
+['expenses','💸','Ayrı xərclər'],['incomes','💰','Gəlirlər'],['debts','📒','Borclar'],
+['personalExpenses','🧾','Şəxsi xərclər'],['personalIncomes','💵','Şəxsi gəlirlər'],
+['notes','✅','Qeydlər'],['reports','📈','Aylıq hesabat'],['workAnalysis','📊','İş analizi'],
+['personalAnalysis','👤','Şəxsi analiz'],['settings','⚙️','Ayarlar']
+];
+let backupHandle=null;
+const BACKUP_DB='islerim_backup_handle_v1';
+
+function save(){
+  localStorage.setItem(KEY,JSON.stringify(db));
+  autoBackup();
+  queueCloudSync();
+}
+
+async function getCloudUser(){
+  if(!supabaseClient)return null;
+  try{const {data}=await supabaseClient.auth.getUser();return data?.user||null}catch(e){return null}
+}
+
+function setCloudStatus(text,ok=false){
+  const el=document.getElementById('cloudStatus');
+  if(el){el.textContent=text;el.style.color=ok?'#059669':'var(--muted)';}
+}
+
+async function syncToCloud(){
+  if(!supabaseClient){setCloudStatus('🟠 Bulud kitabxanası hələ yüklənməyib.');return;}
+  const user=await getCloudUser();
+  if(!user){setCloudStatus('🔴 Bulud sinxronizasiyası üçün giriş edilməyib.');return;}
+  if(cloudSyncBusy)return;
+  cloudSyncBusy=true;
+  try{
+    const {error}=await supabaseClient.from('app_data').upsert({user_id:user.id,data:db,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+    if(error) throw error;
+    setCloudStatus('🟢 Bulud sinxronizasiyası aktivdir — məlumatlar avtomatik yadda saxlanılır.',true);
+  }catch(e){setCloudStatus('🟠 Bulud sinxronizasiyası xətası: '+(e.message||e));}
+  finally{cloudSyncBusy=false;}
+}
+
+function queueCloudSync(){
+  clearTimeout(cloudSyncTimer);
+  cloudSyncTimer=setTimeout(syncToCloud,700);
+}
+
+async function loadCloudData(){
+  if(!supabaseClient){setCloudStatus('🟠 Bulud kitabxanası hələ yüklənməyib.');return;}
+  const user=await getCloudUser();
+  if(!user){setCloudStatus('🔴 Giriş edilməyib.');return;}
+  try{
+    const {data,error}=await supabaseClient.from('app_data').select('data,updated_at').eq('user_id',user.id).maybeSingle();
+    if(error) throw error;
+    if(data?.data){
+      db=data.data;
+      localStorage.setItem(KEY,JSON.stringify(db));
+      render();
+      setCloudStatus('🟢 Bulud məlumatları yükləndi və sinxronizasiya aktivdir.',true);
+    }else{
+      await syncToCloud();
+    }
+  }catch(e){setCloudStatus('🟠 Bulud məlumatları yüklənmədi: '+(e.message||e));}
+}
+
+async function openCloudAuth(){
+  try{await loadSupabaseLibrary()}catch(e){alert('Bulud bağlantısı yüklənmədi. İnternet bağlantısını yoxlayın.');return;}
+  const user=await getCloudUser();
+  if(user){
+    modal('☁️ Bulud sinxronizasiyası',`<div style="padding:10px 0"><b>Giriş edilmiş hesab:</b><br>${esc(user.email||'')}</div><p style="color:var(--muted)">Bu hesabla məlumatlar telefon və kompüter arasında avtomatik sinxronlaşdırılır.</p><button class="primary" onclick="loadCloudData();closeModal()">☁️ İndi sinxronlaşdır</button> <button class="light" onclick="cloudLogout()">Çıxış</button>`);
+    return;
+  }
+  modal('☁️ Bulud sinxronizasiyası',`<p style="color:var(--muted)">Bir e-poçt və şifrə ilə hesab yaradın və ya mövcud hesabınıza daxil olun.</p><form onsubmit="cloudLogin(event)"><div class="field"><label>E-poçt</label><input type="email" name="email" required autocomplete="email"></div><div class="field"><label>Şifrə</label><input type="password" name="password" required minlength="6" autocomplete="current-password"></div><br><button class="primary" type="submit">Daxil ol</button> <button class="light" type="button" onclick="cloudSignupFromForm(this.form)">Yeni hesab yarat</button></form>`);
+}
+
+async function cloudLogin(e){
+  e.preventDefault();
+  if(!supabaseClient){try{await loadSupabaseLibrary()}catch(e){alert('Bulud bağlantısı yüklənmədi.');return;}}
+  const f=new FormData(e.target),email=f.get('email'),password=f.get('password');
+  const {error}=await supabaseClient.auth.signInWithPassword({email,password});
+  if(error){alert('Giriş alınmadı: '+error.message);return;}
+  closeModal();await loadCloudData();setupCloudRealtime();alert('Bulud sinxronizasiyası aktivdir.');
+}
+
+async function cloudSignupFromForm(form){
+  if(!supabaseClient){try{await loadSupabaseLibrary()}catch(e){alert('Bulud bağlantısı yüklənmədi.');return;}}
+  const f=new FormData(form),email=f.get('email'),password=f.get('password');
+  if(!email||String(password).length<6){alert('E-poçt və ən azı 6 simvolluq şifrə daxil edin.');return;}
+  const {data,error}=await supabaseClient.auth.signUp({email,password});
+  if(error){alert('Hesab yaradılmadı: '+error.message);return;}
+  if(data.session){
+    closeModal();await loadCloudData();setupCloudRealtime();alert('Hesab yaradıldı və sinxronizasiya aktivdir.');
+  }else{
+    alert('Hesab yaradıldı. E-poçtunuza gələn təsdiq linkinə klikləyin, sonra proqramdan Daxil ol seçin.');
+  }
+}
+
+async function cloudLogout(){
+  await supabaseClient.auth.signOut();
+  if(cloudChannel){await supabaseClient.removeChannel(cloudChannel);cloudChannel=null;}
+  setCloudStatus('🔴 Bulud sinxronizasiyası üçün giriş edilməyib.');
+  closeModal();
+}
+
+function setupCloudRealtime(){
+  if(!supabaseClient)return;
+  if(cloudChannel) supabaseClient.removeChannel(cloudChannel);
+  cloudChannel=supabaseClient.channel('app-data-sync').on('postgres_changes',{event:'UPDATE',schema:'public',table:'app_data'},async payload=>{
+    const user=await getCloudUser();
+    if(user && payload.new?.user_id===user.id && payload.new?.data){
+      db=payload.new.data;localStorage.setItem(KEY,JSON.stringify(db));render();setCloudStatus('🟢 Digər cihazdan yeni məlumat alındı.',true);
+    }
+  }).subscribe();
+}
+
+async function initCloud(){
+  try{
+    await loadSupabaseLibrary();
+    const {data:{session}}=await supabaseClient.auth.getSession();
+    if(session?.user){await loadCloudData();setupCloudRealtime();}
+    else setCloudStatus('🔴 Bulud sinxronizasiyası üçün giriş edilməyib.');
+    supabaseClient.auth.onAuthStateChange(async (_event,session)=>{
+      if(session?.user){await loadCloudData();setupCloudRealtime();}
+      else setCloudStatus('🔴 Bulud sinxronizasiyası üçün giriş edilməyib.');
+    });
+  }catch(e){setCloudStatus('🟠 Supabase bağlantısı alınmadı.');}
+}
+
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')loadCloudData();});
+
+async function openBackupDB(){
+  return await new Promise((resolve,reject)=>{
+    const req=indexedDB.open(BACKUP_DB,1);
+    req.onupgradeneeded=()=>req.result.createObjectStore('handles');
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+}
+async function getBackupHandle(){
+  if(backupHandle) return backupHandle;
+  try{
+    const idb=await openBackupDB();
+    backupHandle=await new Promise((resolve,reject)=>{
+      const tx=idb.transaction('handles','readonly');
+      const req=tx.objectStore('handles').get('backup');
+      req.onsuccess=()=>resolve(req.result||null);
+      req.onerror=()=>reject(req.error);
+    });
+    return backupHandle;
+  }catch(e){return null}
+}
+async function storeBackupHandle(handle){
+  backupHandle=handle;
+  try{
+    const idb=await openBackupDB();
+    const tx=idb.transaction('handles','readwrite');
+    tx.objectStore('handles').put(handle,'backup');
+  }catch(e){}
+}
+async function writeBackupFile(){
+  const handle=await getBackupHandle();
+  if(!handle) return;
+  try{
+    const perm=await handle.queryPermission({mode:'readwrite'});
+    if(perm!=='granted'){
+      const req=await handle.requestPermission({mode:'readwrite'});
+      if(req!=='granted') return;
+    }
+    const writable=await handle.createWritable();
+    await writable.write(JSON.stringify(db,null,2));
+    await writable.close();
+  }catch(e){}
+}
+let backupTimer=null;
+function autoBackup(){
+  clearTimeout(backupTimer);
+  backupTimer=setTimeout(writeBackupFile,150);
+}
+function money(n){return Number(n||0).toLocaleString('az-AZ',{minimumFractionDigits:2,maximumFractionDigits:2})+' ₼'}
+function today(){return new Date().toISOString().slice(0,10)}
+function fmt(d){if(!d)return'';let [y,m,day]=d.split('-');return `${day}.${m}.${y}`}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function sum(a,f){return a.reduce((x,y)=>x+Number(f(y)||0),0)}
+function nav(){let h=menu.map(x=>`<button class="${current===x[0]?'active':''}" onclick="show('${x[0]}')">${x[1]} ${x[2]}</button>`).join('');document.getElementById('nav').innerHTML=h;const quick=[['home','🏠','Ana səhifə'],['jobs','🛠️','İşlər'],['customers','👥','Müştərilər'],['reports','📈','Hesabat'],['more','☰','Daha çox']];document.getElementById('bottomNav').innerHTML=quick.map(x=>x[0]==='more'?`<button onclick="toggleMobileMenu(true)">${x[1]}<br>${x[2]}</button>`:`<button class="${current===x[0]?'active':''}" onclick="show('${x[0]}')">${x[1]}<br>${x[2]}</button>`).join('');document.getElementById('sheetGrid').innerHTML=menu.map(x=>`<button class="${current===x[0]?'active':''}" onclick="show('${x[0]}')">${x[1]}<br>${x[2]}</button>`).join('')}
+function toggleMobileMenu(v){document.getElementById('mobileSheet').classList.toggle('show',v)}
+function show(p){current=p;toggleMobileMenu(false);nav();document.getElementById('pageTitle').textContent=menu.find(x=>x[0]===p)?.[2]||'';render()}
+function render(){
+ const c=document.getElementById('content');
+ if(current==='home')return home(c);
+ if(current==='jobs')return jobs(c);
+ if(current==='expenses')return expenses(c);
+ if(current==='incomes')return incomes(c);
+ if(current==='debts')return debts(c);
+ if(current==='personalExpenses')return personalExpenses(c);
+ if(current==='personalIncomes')return personalIncomes(c);
+ if(current==='customers')return customers(c);
+ if(current==='notes')return notes(c);
+ if(current==='reports')return reports(c);
+ if(current==='workAnalysis')return workAnalysis(c);
+ if(current==='personalAnalysis')return personalAnalysis(c);
+ if(current==='settings')return settings(c);
+}
+function home(c){
+ let inc=sum(db.incomes,x=>x.amount)+sum(db.jobs,x=>x.paid), exp=sum(db.expenses,x=>x.amount), jobCost=sum(db.jobs,x=>x.cost), profit=inc-jobCost, recv=sum(db.jobs,x=>Number(x.amount)-Number(x.paid))+sum(db.debts.filter(x=>x.type==='receive'),x=>Number(x.amount)-Number(x.paid));
+ c.innerHTML=`<div class="panel" style="background:linear-gradient(135deg,#eef2ff,#faf5ff);border:0"><div style="font-size:13px;color:#6366f1;font-weight:800">📊 İŞLƏRİNİZİN İDARƏETMƏ MƏRKƏZİ</div><div style="font-size:22px;font-weight:800;margin-top:5px">Bugünkü vəziyyətiniz</div><div style="color:#64748b;margin-top:5px">Gəlir, xərc, işlər və borclar bir ekranda.</div></div>
+ <div class="cards">
+ <div class="card"><small>💰 Ümumi gəlir</small><div class="value green">${money(inc)}</div></div>
+ <div class="card"><small>🔧 İş xərci</small><div class="value red">${money(jobCost)}</div></div>
+ <div class="card"><small>📈 İşdən xalis qazanc</small><div class="value ${profit>=0?'green':'red'}">${money(profit)}</div></div>
+ <div class="card"><small>🧾 Alınacaq pul</small><div class="value orange">${money(recv)}</div></div></div>
+ <div class="panel" style="background:#fff7ed;border-color:#fed7aa"><div style="display:flex;justify-content:space-between;align-items:center"><div><b>💸 Ayrı xərclər</b><div style="color:#9a3412;font-size:13px;margin-top:4px">“Xərclər” bölməsinə yazılan məbləğlər iş xərci və işdən xalis qazanc hesabına daxil edilmir.</div></div><strong style="font-size:22px;color:#c2410c">${money(exp)}</strong></div></div>
+ <div class="grid2"><div class="panel"><h2>🛠️ Son işlər</h2>${jobTable(db.jobs.slice().reverse().slice(0,6))}</div>
+ <div class="panel"><h2>💸 Son xərclər</h2>${expenseTable(db.expenses.slice().reverse().slice(0,6))}</div></div>`;
+}
+function toolbar(placeholder,onadd,extra=''){return `<div class="toolbar"><input id="search" placeholder="${placeholder}" oninput="render()">${extra}<button class="primary" onclick="${onadd}">+ Əlavə et</button></div>`}
+function jobTable(arr){if(!arr.length)return'<div class="empty">Hələ iş əlavə edilməyib.</div>';return `<div class="tablewrap"><table><tr><th>Tarix</th><th>İş</th><th>Müştəri</th><th>İş məbləği</th><th>İş xərci</th><th>Xalis qazanc</th><th>Qalan</th><th>Status</th><th></th></tr>${arr.map(x=>`<tr><td>${fmt(x.date)}</td><td>${esc(x.name)}</td><td>${esc(x.customer)}</td><td>${money(x.amount)}</td><td class="red">${money(x.cost)}</td><td class="${Number(x.amount)-Number(x.cost)>=0?'green':'red'}">${money(Number(x.amount)-Number(x.cost))}</td><td>${money(Number(x.amount)-Number(x.paid))}</td><td><span class="badge">${esc(x.status)}</span></td><td class="actions-cell"><button class="light" onclick="openJob('${x.id}')">✏️</button><button class="danger" onclick="del('jobs','${x.id}')">🗑️</button></td></tr>`).join('')}</table></div>`}
+function expenseTable(arr){if(!arr.length)return'<div class="empty">Hələ xərc əlavə edilməyib.</div>';return `<div class="tablewrap"><table><tr><th>Tarix</th><th>Kateqoriya</th><th>Məbləğ</th><th>Qeyd</th><th></th></tr>${arr.map(x=>`<tr><td>${fmt(x.date)}</td><td>${esc(x.category)}</td><td class="red">${money(x.amount)}</td><td>${esc(x.note)}</td><td><button class="light" onclick="openExpense('${x.id}')">✏️</button><button class="danger" onclick="del('expenses','${x.id}')">🗑️</button></td></tr>`).join('')}</table></div>`}
+function jobs(c){let q=(document.getElementById('search')?.value||'').toLowerCase();let arr=db.jobs.filter(x=>(x.name+x.customer+x.phone+x.status).toLowerCase().includes(q));c.innerHTML=toolbar('İş, müştəri və ya telefon axtar...','openJob()')+jobTable(arr)}
+function expenses(c){let q=(document.getElementById('search')?.value||'').toLowerCase();let arr=db.expenses.filter(x=>(x.category+x.note).toLowerCase().includes(q));c.innerHTML=toolbar('Xərc axtar...','openExpense()')+expenseTable(arr)}
+function incomes(c){let q=(document.getElementById('search')?.value||'').toLowerCase();let arr=db.incomes.filter(x=>(x.source+x.note).toLowerCase().includes(q));c.innerHTML=toolbar('Gəlir axtar...','openIncome()')+`<div class="panel">${arr.length?`<table><tr><th>Tarix</th><th>Mənbə</th><th>Məbləğ</th><th>Qeyd</th><th></th></tr>${arr.map(x=>`<tr><td>${fmt(x.date)}</td><td>${esc(x.source)}</td><td class="green">${money(x.amount)}</td><td>${esc(x.note)}</td><td><button class="light" onclick="openIncome('${x.id}')">✏️</button><button class="danger" onclick="del('incomes','${x.id}')">🗑️</button></td></tr>`).join('')}</table>`:'<div class="empty">Hələ gəlir yoxdur.</div>'}</div>`}
+function debts(c){let q=(document.getElementById('search')?.value||'').toLowerCase();let arr=db.debts.filter(x=>(x.person+x.note).toLowerCase().includes(q));c.innerHTML=toolbar('Şəxs və ya qeyd axtar...','openDebt()')+`<div class="panel"><table><tr><th>Tip</th><th>Şəxs/Firma</th><th>Ümumi</th><th>Ödənilən</th><th>Qalan</th><th></th></tr>${arr.map(x=>`<tr><td>${x.type==='receive'?'Alınacaq':'Veriləcək'}</td><td>${esc(x.person)}</td><td>${money(x.amount)}</td><td>${money(x.paid)}</td><td class="${Number(x.amount)-Number(x.paid)>0?'orange':'green'}">${money(Number(x.amount)-Number(x.paid))}</td><td><button class="light" onclick="openDebt('${x.id}')">✏️</button><button class="danger" onclick="del('debts','${x.id}')">🗑️</button></td></tr>`).join('')}</table></div>`}
+function customers(c){let names=[...new Set(db.jobs.map(x=>x.customer).filter(Boolean))];c.innerHTML=`<div class="panel"><h2>Müştərilər</h2>${names.length?`<table><tr><th>Müştəri</th><th>İş sayı</th><th>Ümumi iş məbləği</th><th>Qalan</th></tr>${names.map(n=>{let a=db.jobs.filter(x=>x.customer===n);return `<tr><td>${esc(n)}</td><td>${a.length}</td><td>${money(sum(a,x=>x.amount))}</td><td>${money(sum(a,x=>Number(x.amount)-Number(x.paid)))}</td></tr>`}).join('')}</table>`:'<div class="empty">Müştəri məlumatı iş əlavə etdikcə burada görünəcək.</div>'}</div>`}
+function notes(c){c.innerHTML=`<div class="panel"><h2>Gündəlik qeydlər və işlər</h2><button class="primary" onclick="openNote()">+ Qeyd əlavə et</button><div style="margin-top:15px">${db.notes.slice().reverse().map(x=>`<div style="padding:12px;border-bottom:1px solid var(--line)"><label><input type="checkbox" ${x.done?'checked':''} onchange="toggleNote('${x.id}')"> ${esc(x.text)}</label><button class="danger" style="float:right" onclick="del('notes','${x.id}')">🗑️</button><div style="color:var(--muted);font-size:12px">${fmt(x.date)}</div></div>`).join('')||'<div class="empty">Qeyd yoxdur.</div>'}</div></div>`}
+
+function personalExpenses(c){
+ let q=(document.getElementById('search')?.value||'').toLowerCase();
+ let arr=(db.personalExpenses||[]).filter(x=>(x.category+x.note).toLowerCase().includes(q));
+ let cats=[...new Set((db.personalCategories||[]).concat(arr.map(x=>x.category)).filter(Boolean))];
+ c.innerHTML=toolbar('Şəxsi xərc axtar...','openPersonalExpense()')+
+ `<div class="panel"><div class="toolbar"><select id="pecat" onchange="render()"><option value="">Bütün kateqoriyalar</option>${cats.map(x=>`<option>${esc(x)}</option>`).join('')}</select></div>
+ ${(()=>{let f=document.getElementById('pecat')?.value||'';let a=f?arr.filter(x=>x.category===f):arr;return a.length?`<table><tr><th>Tarix</th><th>Kateqoriya</th><th>Məbləğ</th><th>Qeyd</th><th></th></tr>${a.slice().reverse().map(x=>`<tr><td>${fmt(x.date)}</td><td>${esc(x.category)}</td><td class="red">${money(x.amount)}</td><td>${esc(x.note)}</td><td><button class="light" onclick="openPersonalExpense('${x.id}')">✏️</button><button class="danger" onclick="delPersonal('personalExpenses','${x.id}')">🗑️</button></td></tr>`).join('')}</table>`:'<div class="empty">Şəxsi xərc yoxdur.</div>'})()}</div>`;
+}
+function personalIncomes(c){
+ let q=(document.getElementById('search')?.value||'').toLowerCase();
+ let arr=(db.personalIncomes||[]).filter(x=>(x.source+x.note).toLowerCase().includes(q));
+ c.innerHTML=toolbar('Şəxsi gəlir axtar...','openPersonalIncome()')+
+ `<div class="panel">${arr.length?`<table><tr><th>Tarix</th><th>Gəlir növü</th><th>Məbləğ</th><th>Qeyd</th><th></th></tr>${arr.slice().reverse().map(x=>`<tr><td>${fmt(x.date)}</td><td>${esc(x.source)}</td><td class="green">${money(x.amount)}</td><td>${esc(x.note)}</td><td><button class="light" onclick="openPersonalIncome('${x.id}')">✏️</button><button class="danger" onclick="delPersonal('personalIncomes','${x.id}')">🗑️</button></td></tr>`).join('')}</table>`:'<div class="empty">Şəxsi gəlir yoxdur.</div>'}</div>`;
+}
+function openPersonalExpense(id){
+ let x=(db.personalExpenses||[]).find(a=>a.id===id)||{}, cats=[...new Set((db.personalCategories||[]).concat(['Ərzaq','Ev','Kommunal','Şəxsi yanacaq','Geyim','Sağlamlıq','Əyləncə','Digər']))];
+ modal(id?'Şəxsi xərci redaktə et':'Yeni şəxsi xərc',`<form onsubmit="savePersonalExpense(event,'${id||''}')"><div class="formgrid">
+ <div class="field"><label>Tarix</label><input type="date" name="date" value="${x.date||today()}"></div>
+ <div class="field"><label>Kateqoriya</label><select name="category">${cats.map(s=>`<option ${x.category===s?'selected':''}>${esc(s)}</option>`).join('')}</select></div>
+ <div class="field"><label>Məbləğ (₼)</label><input type="number" step="0.01" min="0" name="amount" required value="${x.amount??''}"></div>
+ <div class="field"><label>Qeyd</label><input name="note" value="${esc(x.note)}"></div></div><br><button class="primary">Yadda saxla</button></form>`);
+}
+function savePersonalExpense(e,id){
+ e.preventDefault();let o=Object.fromEntries(new FormData(e.target));o.id=id||'pexp-'+Date.now();o.amount=+o.amount||0;
+ let i=(db.personalExpenses||[]).findIndex(x=>x.id===o.id);if(i>=0)db.personalExpenses[i]=o;else db.personalExpenses.push(o);save();closeModal();render();
+}
+function openPersonalIncome(id){
+ let x=(db.personalIncomes||[]).find(a=>a.id===id)||{};
+ modal(id?'Şəxsi gəliri redaktə et':'Yeni şəxsi gəlir',`<form onsubmit="savePersonalIncome(event,'${id||''}')"><div class="formgrid">
+ <div class="field"><label>Tarix</label><input type="date" name="date" value="${x.date||today()}"></div>
+ <div class="field"><label>Gəlir növü</label><input name="source" required value="${esc(x.source)}" placeholder="Məs: Hədiyyə, əlavə iş"></div>
+ <div class="field"><label>Məbləğ (₼)</label><input type="number" step="0.01" min="0" name="amount" required value="${x.amount??''}"></div>
+ <div class="field"><label>Qeyd</label><input name="note" value="${esc(x.note)}"></div></div><br><button class="primary">Yadda saxla</button></form>`);
+}
+function savePersonalIncome(e,id){
+ e.preventDefault();let o=Object.fromEntries(new FormData(e.target));o.id=id||'pinc-'+Date.now();o.amount=+o.amount||0;
+ let i=(db.personalIncomes||[]).findIndex(x=>x.id===o.id);if(i>=0)db.personalIncomes[i]=o;else db.personalIncomes.push(o);save();closeModal();render();
+}
+function delPersonal(type,id){if(!confirm('Bu məlumatı silmək istəyirsiniz?'))return;db[type]=db[type].filter(x=>x.id!==id);save();render()}
+
+function localISODate(d=new Date()){
+ let y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+ return `${y}-${m}-${day}`;
+}
+function reportRange(){
+ const preset=document.getElementById('reportPreset')?.value||'month';
+ const now=new Date();
+ let start='',end=localISODate(now);
+ if(preset==='day'){ start=end; }
+ else if(preset==='week'){
+   const d=new Date(now); const day=d.getDay(); const diff=day===0?-6:1-day;
+   d.setDate(d.getDate()+diff); start=localISODate(d);
+ } else if(preset==='lastmonth'){
+   const first=new Date(now.getFullYear(),now.getMonth()-1,1);
+   const last=new Date(now.getFullYear(),now.getMonth(),0);
+   start=localISODate(first); end=localISODate(last);
+ } else if(preset==='custom'){
+   start=document.getElementById('reportStart')?.value||end;
+   end=document.getElementById('reportEnd')?.value||end;
+ } else {
+   start=localISODate(new Date(now.getFullYear(),now.getMonth(),1));
+ }
+ return {preset,start,end};
+}
+function inReportRange(date,start,end){ return !!date && date>=start && date<=end; }
+
+function reports(c){
+ let r=reportRange();
+ let jj=db.jobs.filter(x=>inReportRange(x.date,r.start,r.end));
+ let ee=db.expenses.filter(x=>inReportRange(x.date,r.start,r.end));
+ let gi=db.incomes.filter(x=>inReportRange(x.date,r.start,r.end));
+ let pi=(db.personalIncomes||[]).filter(x=>inReportRange(x.date,r.start,r.end));
+ let pe=(db.personalExpenses||[]).filter(x=>inReportRange(x.date,r.start,r.end));
+
+ let jobIncome=sum(jj,x=>x.amount)+sum(gi,x=>x.amount);
+ let jobCost=sum(jj,x=>x.cost);
+ let workNet=jobIncome-jobCost;
+ let separateExpense=sum(ee,x=>x.amount);
+ let personalIncome=sum(pi,x=>x.amount);
+ let personalExpense=sum(pe,x=>x.amount);
+ let freeMoney=workNet+personalIncome-personalExpense;
+
+ let by={};
+ jj.forEach(x=>{
+   let k=x.category||'Digər';
+   if(!by[k])by[k]={n:0,i:0,c:0};
+   by[k].n++;by[k].i+=Number(x.amount)||0;by[k].c+=Number(x.cost)||0;
+ });
+
+ c.innerHTML=`
+ <div class="panel">
+   <h2>📅 Hesabat filtri</h2>
+   <div class="toolbar">
+     <select id="reportPreset" onchange="render()">
+       <option value="day" ${r.preset==='day'?'selected':''}>Bugün</option>
+       <option value="week" ${r.preset==='week'?'selected':''}>Bu həftə</option>
+       <option value="month" ${r.preset==='month'?'selected':''}>Bu ay</option>
+       <option value="lastmonth" ${r.preset==='lastmonth'?'selected':''}>Ötən ay</option>
+       <option value="custom" ${r.preset==='custom'?'selected':''}>Seçilmiş tarix arası</option>
+     </select>
+     ${r.preset==='custom'?`
+       <label style="display:flex;align-items:center;gap:6px">Başlanğıc:
+         <input id="reportStart" type="date" value="${r.start}" onchange="render()">
+       </label>
+       <label style="display:flex;align-items:center;gap:6px">Son:
+         <input id="reportEnd" type="date" value="${r.end}" onchange="render()">
+       </label>`:''}
+     <span style="padding:10px 12px;background:#eef2ff;border-radius:10px;color:#4338ca;font-weight:700">
+       ${fmt(r.start)} — ${fmt(r.end)}
+     </span>
+   </div>
+ </div>
+
+ <div class="cards">
+   <div class="card"><small>💰 İş gəliri</small><div class="value green">${money(jobIncome)}</div></div>
+   <div class="card"><small>🔧 İş xərci</small><div class="value red">${money(jobCost)}</div></div>
+   <div class="card"><small>📈 İşdən xalis</small><div class="value ${workNet>=0?'green':'red'}">${money(workNet)}</div></div>
+   <div class="card"><small>💸 Ayrı xərclər</small><div class="value red">${money(separateExpense)}</div></div>
+ </div>
+
+ <div class="cards">
+   <div class="card"><small>💵 Şəxsi gəlir</small><div class="value green">${money(personalIncome)}</div></div>
+   <div class="card"><small>🧾 Şəxsi xərc</small><div class="value red">${money(personalExpense)}</div></div>
+   <div class="card"><small>💼 Ümumi sərbəst pul</small><div class="value ${freeMoney>=0?'green':'red'}">${money(freeMoney)}</div></div>
+   <div class="card"><small>🛠️ İş sayı</small><div class="value">${jj.length}</div></div>
+ </div>
+
+ <div class="grid2">
+   <div class="panel">
+     <h2>📊 İş növləri üzrə nəticə</h2>
+     ${Object.entries(by).length?`
+     <table><tr><th>İş növü</th><th>Say</th><th>Gəlir</th><th>Xərc</th><th>Xalis</th></tr>
+     ${Object.entries(by).map(([k,v])=>`<tr><td>${esc(k)}</td><td>${v.n}</td><td>${money(v.i)}</td><td>${money(v.c)}</td><td class="${v.i-v.c>=0?'green':'red'}">${money(v.i-v.c)}</td></tr>`).join('')}
+     </table>`:'<div class="empty">Bu tarix aralığında iş yoxdur.</div>'}
+   </div>
+   <div class="panel">
+     <h2>💸 Ayrı xərclər</h2>
+     ${ee.length?expenseTable(ee.slice().reverse()):'<div class="empty">Bu tarix aralığında ayrı xərc yoxdur.</div>'}
+   </div>
+ </div>
+
+ <div class="panel">
+   <h2>🛠️ İşlər</h2>
+   ${jj.length?jobTable(jj.slice().reverse()):'<div class="empty">Bu tarix aralığında iş yoxdur.</div>'}
+ </div>`;
+}
+function settings(c){c.innerHTML=`<div class="panel"><h2>⚙️ Ayarlar</h2>
+<div style="padding:12px 14px;background:#eef2ff;border-radius:10px;margin-bottom:14px;color:#3730a3"><b>📥 Excel məlumatları köçürüldü.</b><br>İşlər, iş xərcləri, ayrıca xərclər, şəxsi xərclər, şəxsi gəlirlər və borclar proqrama əlavə olunub.</div>
+<div style="padding:14px;background:#eefdf7;border:1px solid #bbf7d0;border-radius:12px;margin-bottom:15px">
+<h3 style="margin:0 0 8px">☁️ Telefon + kompüter sinxronizasiyası</h3>
+<p id="cloudStatus" style="margin:0 0 10px;color:var(--muted)">Yoxlanılır...</p>
+<button class="primary" onclick="openCloudAuth()">☁️ Bulud hesabı / Giriş</button>
+</div>
+<div style="padding:14px;background:#f8fafc;border:1px solid var(--line);border-radius:12px;margin-bottom:15px">
+<h3 style="margin:0 0 8px">💾 Avtomatik backup</h3>
+<p id="backupStatus" style="margin:0 0 10px;color:var(--muted)">Yoxlanılır...</p>
+<button class="primary" onclick="chooseBackupFile()">Backup faylını seç / dəyiş</button>
+<button class="light" onclick="writeBackupFile()">İndi backup et</button>
+</div>
+<p>Bu proqram məlumatları brauzerin yaddaşında saxlayır. Səhifəni bağlasanız da məlumatlar qalır.</p><button class="light" onclick="exportData()">💾 Backup çıxar</button> <button class="light" onclick="importData()">📥 Backup bərpa et</button> <button class="danger" onclick="clearAll()">Bütün məlumatları sil</button><input id="file" type="file" accept=".json" style="display:none" onchange="readBackup(event)"></div>`}
+function modal(title,body){document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=body;document.getElementById('modal').classList.add('show')}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+function openJob(id){let x=db.jobs.find(a=>a.id===id)||{};modal(id?'İşi redaktə et':'Yeni iş',`<form onsubmit="saveJob(event,'${id||''}')"><div class="formgrid">
+<div class="field"><label>İşin adı</label><input name="name" required value="${esc(x.name)}"></div><div class="field"><label>Müştərinin adı</label><input name="customer" value="${esc(x.customer)}"></div>
+<div class="field"><label>Telefon</label><input name="phone" value="${esc(x.phone)}"></div><div class="field"><label>Tarix</label><input type="date" name="date" value="${x.date||today()}"></div>
+<div class="field"><label>İşin məbləği (₼)</label><input type="number" step="0.01" min="0" name="amount" required value="${x.amount??''}"></div><div class="field"><label>İş xərci (₼)</label><input type="number" step="0.01" min="0" name="cost" value="${x.cost??0}" placeholder="Material, yol və s."></div>
+<div class="field"><label>Alınan məbləğ (₼)</label><input type="number" step="0.01" min="0" name="paid" value="${x.paid??0}"></div>
+<div class="field"><label>Status</label><select name="status">${['Gözləyir','Davam edir','Tamamlandı','Ləğv edildi'].map(s=>`<option ${x.status===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="field"><label>Kateqoriya</label><input name="category" value="${esc(x.category)}" placeholder="Məs: Kamera quraşdırılması"></div>
+<div class="field full"><label>Qeyd</label><textarea name="note">${esc(x.note)}</textarea></div></div><br><button class="primary">Yadda saxla</button></form>`)}
+function saveJob(e,id){e.preventDefault();let f=new FormData(e.target),o=Object.fromEntries(f);o.id=id||Date.now().toString();o.amount=+o.amount;o.cost=+o.cost||0;o.paid=+o.paid||0;o.created=o.created||new Date().toISOString();let i=db.jobs.findIndex(x=>x.id===o.id);if(i>=0)db.jobs[i]=o;else db.jobs.push(o);save();closeModal();render()}
+const cats=['Yanacaq','Yemək','Yol','Material','Avadanlıq','Mağaza','Telefon/İnternet','Kommunal','Şəxsi','Digər'];
+function openExpense(id){let x=db.expenses.find(a=>a.id===id)||{};modal(id?'Xərci redaktə et':'Yeni xərc',`<form onsubmit="saveExpense(event,'${id||''}')"><div class="formgrid"><div class="field"><label>Tarix</label><input type="date" name="date" value="${x.date||today()}"></div><div class="field"><label>Kateqoriya</label><select name="category">${cats.map(s=>`<option ${x.category===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="field"><label>Məbləğ (₼)</label><input type="number" step="0.01" name="amount" required value="${x.amount??''}"></div><div class="field"><label>Qeyd</label><input name="note" value="${esc(x.note)}"></div></div><br><button class="primary">Yadda saxla</button></form>`)}
+function saveExpense(e,id){e.preventDefault();let o=Object.fromEntries(new FormData(e.target));o.id=id||Date.now().toString();o.amount=+o.amount;let i=db.expenses.findIndex(x=>x.id===o.id);if(i>=0)db.expenses[i]=o;else db.expenses.push(o);save();closeModal();render()}
+function openIncome(id){let x=db.incomes.find(a=>a.id===id)||{};modal(id?'Gəliri redaktə et':'Yeni gəlir',`<form onsubmit="saveIncome(event,'${id||''}')"><div class="formgrid"><div class="field"><label>Tarix</label><input type="date" name="date" value="${x.date||today()}"></div><div class="field"><label>Gəlir mənbəyi</label><input name="source" required value="${esc(x.source)}"></div><div class="field"><label>Məbləğ (₼)</label><input type="number" step="0.01" name="amount" required value="${x.amount??''}"></div><div class="field"><label>Qeyd</label><input name="note" value="${esc(x.note)}"></div></div><br><button class="primary">Yadda saxla</button></form>`)}
+function saveIncome(e,id){e.preventDefault();let o=Object.fromEntries(new FormData(e.target));o.id=id||Date.now().toString();o.amount=+o.amount;let i=db.incomes.findIndex(x=>x.id===o.id);if(i>=0)db.incomes[i]=o;else db.incomes.push(o);save();closeModal();render()}
+function openDebt(id){let x=db.debts.find(a=>a.id===id)||{};modal(id?'Borcu redaktə et':'Yeni borc',`<form onsubmit="saveDebt(event,'${id||''}')"><div class="formgrid"><div class="field"><label>Tip</label><select name="type"><option value="receive" ${x.type==='receive'?'selected':''}>Alınacaq</option><option value="pay" ${x.type==='pay'?'selected':''}>Veriləcək</option></select></div><div class="field"><label>Şəxs/Firma</label><input name="person" required value="${esc(x.person)}"></div><div class="field"><label>Ümumi məbləğ (₼)</label><input type="number" step="0.01" name="amount" required value="${x.amount??''}"></div><div class="field"><label>Ödənilən (₼)</label><input type="number" step="0.01" name="paid" value="${x.paid??0}"></div><div class="field full"><label>Qeyd</label><textarea name="note">${esc(x.note)}</textarea></div></div><br><button class="primary">Yadda saxla</button></form>`)}
+function saveDebt(e,id){e.preventDefault();let o=Object.fromEntries(new FormData(e.target));o.id=id||Date.now().toString();o.amount=+o.amount;o.paid=+o.paid;let i=db.debts.findIndex(x=>x.id===o.id);if(i>=0)db.debts[i]=o;else db.debts.push(o);save();closeModal();render()}
+function openNote(){modal('Yeni qeyd',`<form onsubmit="saveNote(event)"><div class="field"><label>Qeyd / görüləcək iş</label><textarea name="text" required autofocus></textarea></div><br><button class="primary">Yadda saxla</button></form>`)}
+function saveNote(e){e.preventDefault();let o=Object.fromEntries(new FormData(e.target));db.notes.push({id:Date.now().toString(),text:o.text,date:today(),done:false});save();closeModal();render()}
+function toggleNote(id){let x=db.notes.find(a=>a.id===id);if(x)x.done=!x.done;save();render()}
+function del(type,id){if(!confirm('Bu məlumatı silmək istəyirsiniz?'))return;db[type]=db[type].filter(x=>x.id!==id);save();render()}
+async function chooseBackupFile(){
+  if(!window.showSaveFilePicker){
+    alert('Bu funksiya üçün Chrome və ya Microsoft Edge istifadə edin.');
+    return;
+  }
+  try{
+    const handle=await window.showSaveFilePicker({
+      suggestedName:'islerim-xerclerim-backup.json',
+      types:[{description:'JSON backup',accept:{'application/json':['.json']}}]
+    });
+    await storeBackupHandle(handle);
+    await writeBackupFile();
+    updateBackupStatus();
+    alert('Backup faylı seçildi. Bundan sonra hər əməliyyatdan sonra eyni fayl yenilənəcək.');
+  }catch(e){}
+}
+function exportData(){
+  if(window.showSaveFilePicker){chooseBackupFile();return;}
+  let a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));
+  a.download='islerim-xerclerim-backup.json';
+  a.click();
+}
+function importData(){document.getElementById('file').click()}
+async function updateBackupStatus(){
+  const el=document.getElementById('backupStatus');
+  if(!el)return;
+  const h=await getBackupHandle();
+  el.textContent=h?'🟢 Avtomatik backup aktivdir — seçilmiş fayl hər əməliyyatdan sonra yenilənir.':'🔴 Avtomatik backup faylı seçilməyib.';
+}
+function readBackup(e){let file=e.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();render();alert('Backup bərpa edildi.')}catch{alert('Backup faylı düzgün deyil.')}};r.readAsText(file)}
+function clearAll(){if(confirm('Bütün məlumatlar silinəcək. Əminsiniz?')){db={jobs:[],expenses:[],incomes:[],debts:[],notes:[],customers:[]};save();render()}}
+nav();render();setTimeout(updateBackupStatus,100);setTimeout(initCloud,300);
+</script>
+</body>
+</html>
