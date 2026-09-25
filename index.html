@@ -21,6 +21,8 @@ button,.btn{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-we
 @media(max-width:500px){.cards{grid-template-columns:1fr 1fr}.top{align-items:flex-start;gap:10px}.top h1{font-size:20px}.actions .light{display:none}.sheetGrid{grid-template-columns:repeat(3,1fr)}}
 
 .note-reminder{border-left:4px solid #6366f1;background:#f8faff;padding:12px 14px;border-radius:12px;margin-top:10px}.note-meta{color:var(--muted);font-size:12px;margin-top:5px}.month-report{margin-top:18px}.month-report .mini{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.month-report .mini-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}.month-report .mini-card small{display:block;color:var(--muted);font-size:12px}.month-report .mini-value{font-weight:800;font-size:18px;margin-top:4px}.today-notes{margin-top:18px}.note-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}@media(max-width:700px){.month-report .mini{grid-template-columns:1fr 1fr}.note-reminder{padding:11px}.month-report .mini-value{font-size:16px}}
+
+.customer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.customer-card{border:1px solid var(--line);background:#fff;border-radius:16px;padding:15px;cursor:pointer;transition:.2s}.customer-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}.customer-card-head{display:flex;align-items:center;gap:10px}.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;display:grid;place-items:center;font-weight:800}.customer-phone,.customer-last{font-size:12px;color:var(--muted);margin-top:4px}.customer-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:13px}.customer-stats div,.customer-summary div{background:#f8fafc;border-radius:10px;padding:8px}.customer-stats small,.customer-summary small{display:block;color:var(--muted);font-size:10px}.customer-stats b,.customer-summary b{display:block;margin-top:3px;font-size:14px}.customer-detail h3{font-size:15px;margin:16px 0 8px}.customer-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.customer-job,.payment-row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.customer-job span,.customer-job small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.payment-row{font-size:12px}.payment-row b{white-space:nowrap}@media(max-width:900px){.customer-grid{grid-template-columns:1fr}.customer-summary{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
@@ -80,6 +82,14 @@ if(!db) {
 const DEFAULT_JOB_TYPES=['Kamera','Sığorta','İnternet','Krosna','Çap işləri','Dəvətnamə','Digər gəlir'];
 const existingJobTypes=(db.jobs||[]).map(x=>String(x.category||'').trim()).filter(Boolean);
 db.jobTypes=[...new Set([...(db.jobTypes||[]),...DEFAULT_JOB_TYPES,...existingJobTypes])];
+// Ödəniş tarixçəsi üçün köhnə məlumatları uyğunlaşdır
+(db.jobs||[]).forEach(j=>{
+  j.payments=Array.isArray(j.payments)?j.payments:[];
+  if(!j.payments.length && Number(j.paid||0)>0){
+    j.payments=[{id:'legacy-pay-'+j.id,date:j.date||today(),amount:Number(j.paid||0),note:'Mövcud ödəniş'}];
+  }
+});
+db.customers=Array.isArray(db.customers)?db.customers:[];
 let current='home';
 
 const menu=[
@@ -314,7 +324,38 @@ function jobs(c){let q=(document.getElementById('search')?.value||'').toLowerCas
 function expenses(c){let q=(document.getElementById('search')?.value||'').toLowerCase();let arr=db.expenses.filter(x=>(x.category+x.note).toLowerCase().includes(q));c.innerHTML=toolbar('Xərc axtar...','openExpense()')+expenseTable(arr)}
 function incomes(c){let q=(document.getElementById('search')?.value||'').toLowerCase();let arr=db.incomes.filter(x=>(x.source+x.note).toLowerCase().includes(q));c.innerHTML=toolbar('Gəlir axtar...','openIncome()')+`<div class="panel">${arr.length?`<table><tr><th>Tarix</th><th>Mənbə</th><th>Məbləğ</th><th>Qeyd</th><th></th></tr>${arr.map(x=>`<tr><td>${fmt(x.date)}</td><td>${esc(x.source)}</td><td class="green">${money(x.amount)}</td><td>${esc(x.note)}</td><td><button class="light" onclick="openIncome('${x.id}')">✏️</button><button class="danger" onclick="del('incomes','${x.id}')">🗑️</button></td></tr>`).join('')}</table>`:'<div class="empty">Hələ gəlir yoxdur.</div>'}</div>`}
 function debts(c){let q=(document.getElementById('search')?.value||'').toLowerCase();let arr=db.debts.filter(x=>(x.person+x.note).toLowerCase().includes(q));c.innerHTML=toolbar('Şəxs və ya qeyd axtar...','openDebt()')+`<div class="panel"><table><tr><th>Tip</th><th>Şəxs/Firma</th><th>Ümumi</th><th>Ödənilən</th><th>Qalan</th><th></th></tr>${arr.map(x=>`<tr><td>${x.type==='receive'?'Alınacaq':'Veriləcək'}</td><td>${esc(x.person)}</td><td>${money(x.amount)}</td><td>${money(x.paid)}</td><td class="${Number(x.amount)-Number(x.paid)>0?'orange':'green'}">${money(Number(x.amount)-Number(x.paid))}</td><td><button class="light" onclick="openDebt('${x.id}')">✏️</button><button class="danger" onclick="del('debts','${x.id}')">🗑️</button></td></tr>`).join('')}</table></div>`}
-function customers(c){let names=[...new Set(db.jobs.map(x=>x.customer).filter(Boolean))];c.innerHTML=`<div class="panel"><h2>Müştərilər</h2>${names.length?`<table><tr><th>Müştəri</th><th>İş sayı</th><th>Ümumi iş məbləği</th><th>Qalan</th></tr>${names.map(n=>{let a=db.jobs.filter(x=>x.customer===n);return `<tr><td>${esc(n)}</td><td>${a.length}</td><td>${money(sum(a,x=>x.amount))}</td><td>${money(sum(a,x=>Number(x.amount)-Number(x.paid)))}</td></tr>`}).join('')}</table>`:'<div class="empty">Müştəri məlumatı iş əlavə etdikcə burada görünəcək.</div>'}</div>`}
+function customerRecords(){
+ const map=new Map();
+ (db.jobs||[]).filter(x=>String(x.customer||'').trim()).forEach(j=>{
+   const key=String(j.customer).trim().toLowerCase();
+   if(!map.has(key)) map.set(key,{name:String(j.customer).trim(),phone:j.phone||'',jobs:[]});
+   const a=map.get(key); a.jobs.push(j); if(!a.phone&&j.phone)a.phone=j.phone;
+ });
+ (db.customers||[]).forEach(c=>{
+   const key=String(c.name||'').trim().toLowerCase(); if(!key)return;
+   if(!map.has(key))map.set(key,{name:String(c.name).trim(),phone:c.phone||'',jobs:[]});
+   else if(c.phone&&!map.get(key).phone)map.get(key).phone=c.phone;
+ });
+ return [...map.values()].sort((a,b)=>a.name.localeCompare(b.name,'az'));
+}
+function customers(c){
+ let q=(document.getElementById('search')?.value||'').toLowerCase();
+ let arr=customerRecords().filter(a=>(a.name+' '+a.phone).toLowerCase().includes(q));
+ c.innerHTML=toolbar('Müştəri adı və ya telefon axtar...','openCustomer()')+`<div class="panel"><div class="customer-grid">${arr.map(a=>{
+   const total=sum(a.jobs,x=>x.amount), paid=sum(a.jobs,x=>Number(x.paid||0)), remain=total-paid, last=a.jobs.slice().sort((x,y)=>(y.date||'').localeCompare(x.date||''))[0];
+   return `<div class="customer-card" onclick="openCustomerByName('${esc(a.name).replace(/'/g,"\\'")}')"><div class="customer-card-head"><div class="avatar">${esc(a.name.charAt(0).toUpperCase())}</div><div><b>${esc(a.name)}</b><div class="customer-phone">${a.phone?`📞 ${esc(a.phone)}`:'Telefon qeyd edilməyib'}</div></div></div><div class="customer-stats"><div><small>İş sayı</small><b>${a.jobs.length}</b></div><div><small>Ümumi</small><b>${money(total)}</b></div><div><small>Qalan</small><b class="${remain>0?'orange':'green'}">${money(remain)}</b></div></div><div class="customer-last">Son iş: ${last?fmt(last.date):'—'}</div></div>`}).join('')||'<div class="empty">Hələ müştəri yoxdur.</div>'}</div></div>`;
+}
+function openCustomer(){
+ modal('Yeni müştəri',`<form onsubmit="saveCustomer(event)"><div class="formgrid"><div class="field"><label>Müştərinin adı</label><input name="name" required></div><div class="field"><label>Telefon</label><input name="phone" type="tel" placeholder="050..." required></div><div class="field full"><label>Qeyd</label><textarea name="note" placeholder="Əlavə məlumat"></textarea></div></div><br><button class="primary">Yadda saxla</button></form>`);
+}
+function saveCustomer(e){e.preventDefault();let o=Object.fromEntries(new FormData(e.target));o.id='cust-'+Date.now();db.customers.push(o);save();closeModal();render();}
+function openCustomerByName(name){
+ const a=customerRecords().find(x=>x.name.toLowerCase()===String(name).toLowerCase()); if(!a)return;
+ const total=sum(a.jobs,x=>x.amount), paid=sum(a.jobs,x=>Number(x.paid||0)), remain=total-paid;
+ const rows=a.jobs.slice().sort((x,y)=>(y.date||'').localeCompare(x.date||'')).map(j=>`<div class="customer-job"><div><b>${esc(j.name)}</b><span>${fmt(j.date)} · ${esc(j.category||'')}</span></div><div><strong>${money(j.amount)}</strong><small>Qalan: ${money(Number(j.amount)-Number(j.paid))}</small></div></div>`).join('');
+ const payments=a.jobs.flatMap(j=>(j.payments||[]).map(p=>({...p,jobName:j.name}))).sort((x,y)=>(y.date||'').localeCompare(x.date||''));
+ modal('👤 '+esc(a.name),`<div class="customer-detail"><div class="customer-contact">📞 ${a.phone?`<a href="tel:${esc(a.phone)}">${esc(a.phone)}</a>`:'Telefon qeyd edilməyib'}</div><div class="customer-summary"><div><small>İş sayı</small><b>${a.jobs.length}</b></div><div><small>Ümumi</small><b>${money(total)}</b></div><div><small>Ödənilib</small><b class="green">${money(paid)}</b></div><div><small>Qalan</small><b class="${remain>0?'orange':'green'}">${money(remain)}</b></div></div><h3>🛠️ İşlər</h3>${rows||'<div class="empty">İş yoxdur.</div>'}<h3 style="margin-top:18px">💳 Ödəniş tarixçəsi</h3>${payments.length?payments.map(p=>`<div class="payment-row"><span>📅 ${fmt(p.date)} · ${esc(p.jobName)}</span><b class="green">+ ${money(p.amount)}</b></div>`).join(''):'<div class="empty">Ödəniş tarixçəsi yoxdur.</div>'}</div>`);
+}
 function notes(c){
  let arr=(db.notes||[]).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b.time||'').localeCompare(a.time||''));
  c.innerHTML=`<div class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><h2 style="margin:0">🔔 Qeydlər və xatırlatmalar</h2><div style="color:var(--muted);font-size:13px;margin-top:5px">Müştəri, telefon, tarix və saat yazın. Vaxt çatanda bildiriş göstəriləcək.</div></div><button class="primary" onclick="openNote()">+ Qeyd əlavə et</button></div><div style="margin-top:15px">${arr.map(x=>`<div class="note-reminder"><div><label><input type="checkbox" ${x.done?'checked':''} onchange="toggleNote('${x.id}')"> <b>${esc(x.text)}</b></label><button class="light" style="float:right;margin-right:6px" onclick="openNote('${x.id}')">✏️</button><button class="danger" style="float:right" onclick="del('notes','${x.id}')">🗑️</button></div><div class="note-meta">👤 ${esc(x.customer||'Müştəri yoxdur')} &nbsp; 📞 ${esc(x.phone||'Telefon yoxdur')} &nbsp; 📅 ${fmt(x.date)} ${x.time?'· 🕒 '+esc(x.time):''}</div></div>`).join('')||'<div class="empty">Qeyd yoxdur.</div>'}</div></div>`;
@@ -507,14 +548,25 @@ function settings(c){c.innerHTML=`<div class="panel"><h2>⚙️ Ayarlar</h2>
 <p>Bu proqram məlumatları brauzerin yaddaşında saxlayır. Səhifəni bağlasanız da məlumatlar qalır.</p><button class="light" onclick="exportData()">💾 Backup çıxar</button> <button class="light" onclick="importData()">📥 Backup bərpa et</button> <button class="danger" onclick="clearAll()">Bütün məlumatları sil</button><input id="file" type="file" accept=".json" style="display:none" onchange="readBackup(event)"></div>`}
 function modal(title,body){document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=body;document.getElementById('modal').classList.add('show')}
 function closeModal(){document.getElementById('modal').classList.remove('show')}
-function openJob(id){let x=db.jobs.find(a=>a.id===id)||{};modal(id?'İşi redaktə et':'Yeni iş',`<form onsubmit="saveJob(event,'${id||''}')"><div class="formgrid">
-<div class="field"><label>İşin adı</label><input name="name" required value="${esc(x.name)}"></div><div class="field"><label>Müştərinin adı</label><input name="customer" value="${esc(x.customer)}"></div>
+function openJob(id){
+ let x=db.jobs.find(a=>a.id===id)||{}; x.payments=Array.isArray(x.payments)?x.payments:[];
+ const currentPaid=Number(x.paid||0);
+ const history=x.payments.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(p=>`<div class="payment-row"><span>📅 ${fmt(p.date)} ${p.note?'· '+esc(p.note):''}</span><b class="green">+ ${money(p.amount)}</b></div>`).join('');
+ modal(id?'İşi redaktə et':'Yeni iş',`<form onsubmit="saveJob(event,'${id||''}')"><div class="formgrid">
+<div class="field"><label>İşin adı</label><input name="name" required value="${esc(x.name)}"></div><div class="field"><label>Müştərinin adı</label><input name="customer" value="${esc(x.customer)}" list="customerNames"><datalist id="customerNames">${customerRecords().map(a=>`<option value="${esc(a.name)}">`).join('')}</datalist></div>
 <div class="field"><label>Telefon</label><input name="phone" value="${esc(x.phone)}"></div><div class="field"><label>Tarix</label><input type="date" name="date" value="${x.date||today()}"></div>
 <div class="field"><label>İşin məbləği (₼)</label><input type="number" step="0.01" min="0" name="amount" required value="${x.amount??''}"></div><div class="field"><label>İş xərci (₼)</label><input type="number" step="0.01" min="0" name="cost" value="${x.cost??0}" placeholder="Material, yol və s."></div>
-<div class="field"><label>Alınan məbləğ (₼)</label><input type="number" step="0.01" min="0" name="paid" value="${x.paid??0}"></div>
-<div class="field"><label>Status</label><select name="status">${['Gözləyir','Davam edir','Tamamlandı','Ləğv edildi'].map(s=>`<option ${x.status===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="field"><label>Kateqoriya</label><select name="category" required><option value="">Kateqoriya seçin</option>${(db.jobTypes||[]).map(s=>`<option value="${esc(s)}" ${x.category===s?'selected':''}>${esc(s)}</option>`).join('')}</select></div>
-<div class="field full"><label>Qeyd</label><textarea name="note">${esc(x.note)}</textarea></div></div><br><button class="primary">Yadda saxla</button></form>`)}
-function saveJob(e,id){e.preventDefault();let f=new FormData(e.target),o=Object.fromEntries(f);o.id=id||Date.now().toString();o.amount=+o.amount;o.cost=+o.cost||0;o.paid=+o.paid||0;o.created=o.created||new Date().toISOString();let i=db.jobs.findIndex(x=>x.id===o.id);if(i>=0)db.jobs[i]=o;else db.jobs.push(o);save();closeModal();render()}
+<div class="field"><label>Hazırda alınan məbləğ (₼)</label><input type="number" step="0.01" name="paid" value="${currentPaid}" readonly style="background:#f8fafc"></div><div class="field"><label>Yeni ödəniş (₼)</label><input type="number" step="0.01" min="0" name="newPayment" value="0" placeholder="İndi alınan məbləğ"></div>
+<div class="field"><label>Ödəniş tarixi</label><input type="date" name="paymentDate" value="${today()}"></div><div class="field"><label>Status</label><select name="status">${['Gözləyir','Davam edir','Tamamlandı','Ləğv edildi'].map(s=>`<option ${x.status===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="field"><label>Kateqoriya</label><select name="category" required><option value="">Kateqoriya seçin</option>${(db.jobTypes||[]).map(s=>`<option value="${esc(s)}" ${x.category===s?'selected':''}>${esc(s)}</option>`).join('')}</select></div>
+<div class="field full"><label>Qeyd</label><textarea name="note">${esc(x.note)}</textarea></div></div>${history?`<div style="margin-top:16px"><b>💳 Ödəniş tarixçəsi</b>${history}</div>`:''}<br><button class="primary">Yadda saxla</button></form>`)
+}
+function saveJob(e,id){
+ e.preventDefault(); let f=new FormData(e.target),o=Object.fromEntries(f); o.id=id||Date.now().toString(); o.amount=+o.amount; o.cost=+o.cost||0;
+ let i=db.jobs.findIndex(x=>x.id===o.id), old=i>=0?db.jobs[i]:null; o.paid=old?Number(old.paid||0):0; o.payments=old&&Array.isArray(old.payments)?old.payments.slice():[];
+ const np=Number(o.newPayment||0); if(!old && Number(f.get('paid')||0)>0 && !np){ const initial=Number(f.get('paid')); o.paid=initial; o.payments.push({id:'pay-'+Date.now(),date:o.date||today(),amount:initial,note:'İlkin ödəniş'}); }
+ if(np>0){ if(np>Math.max(0,Number(o.amount)-Number(o.paid))){alert('Yeni ödəniş işin qalan məbləğindən çox ola bilməz.');return;} o.payments.push({id:'pay-'+Date.now(),date:f.get('paymentDate')||today(),amount:np,note:'Ödəniş'}); o.paid=Number(o.paid)+np; }
+ delete o.newPayment; delete o.paymentDate; o.created=old?.created||new Date().toISOString(); if(i>=0)db.jobs[i]=o;else db.jobs.push(o); save();closeModal();render()
+}
 const cats=['Yanacaq','Yemək','Yol','Material','Avadanlıq','Mağaza','Telefon/İnternet','Kommunal','Şəxsi','Digər'];
 function openExpense(id){let x=db.expenses.find(a=>a.id===id)||{};modal(id?'Xərci redaktə et':'Yeni xərc',`<form onsubmit="saveExpense(event,'${id||''}')"><div class="formgrid"><div class="field"><label>Tarix</label><input type="date" name="date" value="${x.date||today()}"></div><div class="field"><label>Kateqoriya</label><select name="category">${cats.map(s=>`<option ${x.category===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="field"><label>Məbləğ (₼)</label><input type="number" step="0.01" name="amount" required value="${x.amount??''}"></div><div class="field"><label>Qeyd</label><input name="note" value="${esc(x.note)}"></div></div><br><button class="primary">Yadda saxla</button></form>`)}
 function saveExpense(e,id){e.preventDefault();let o=Object.fromEntries(new FormData(e.target));o.id=id||Date.now().toString();o.amount=+o.amount;let i=db.expenses.findIndex(x=>x.id===o.id);if(i>=0)db.expenses[i]=o;else db.expenses.push(o);save();closeModal();render()}
