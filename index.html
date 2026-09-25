@@ -96,6 +96,7 @@ db.jobTypes=[...new Set([...(db.jobTypes||[]),...DEFAULT_JOB_TYPES,...existingJo
   }
 });
 db.customers=Array.isArray(db.customers)?db.customers:[];
+db.pushSubscriptions=Array.isArray(db.pushSubscriptions)?db.pushSubscriptions:[];
 let current='home';
 let jobFilterMode='month', jobFilterStart='', jobFilterEnd='';
 
@@ -672,7 +673,7 @@ function openNote(id){
  let x=(db.notes||[]).find(a=>a.id===id)||{};
  modal(id?'Qeydi redaktə et':'Yeni qeyd',`<form onsubmit="saveNote(event,'${id||''}')"><div class="formgrid"><div class="field full"><label>Qeyd / görüləcək iş</label><textarea name="text" required autofocus>${esc(x.text)}</textarea></div><div class="field"><label>Müştərinin adı</label><input name="customer" value="${esc(x.customer)}" placeholder="Məs: Əli"></div><div class="field"><label>Telefon nömrəsi</label><input type="tel" name="phone" value="${esc(x.phone)}" placeholder="050..."></div><div class="field"><label>Tarix</label><input type="date" name="date" value="${x.date||today()}" required></div><div class="field"><label>Saat</label><input type="time" name="time" value="${x.time||''}"></div></div><br><button class="primary">Yadda saxla</button></form>`);
 }
-function saveNote(e,id){e.preventDefault();let o=Object.fromEntries(new FormData(e.target));o.id=id||'note-'+Date.now();o.done=id?(db.notes.find(x=>x.id===id)?.done||false):false;let i=(db.notes||[]).findIndex(x=>x.id===o.id);if(i>=0)db.notes[i]=o;else db.notes.push(o);save();requestNotificationPermission();scheduleNoteNotifications();closeModal();render()}
+async function saveNote(e,id){e.preventDefault();let o=Object.fromEntries(new FormData(e.target));o.id=id||'note-'+Date.now();o.done=id?(db.notes.find(x=>x.id===id)?.done||false):false;o.tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Baku';let i=(db.notes||[]).findIndex(x=>x.id===o.id);if(i>=0){o.notifiedAt=db.notes[i].notifiedAt||null;db.notes[i]=o}else{db.notes.push(o)}save();requestNotificationPermission();try{await ensureWebPushSubscription()}catch(e){}scheduleNoteNotifications();closeModal();render()}
 function toggleNote(id){let x=db.notes.find(a=>a.id===id);if(x)x.done=!x.done;save();render()}
 function toggleNote(id){let x=db.notes.find(a=>a.id===id);if(x)x.done=!x.done;save();render()}
 function del(type,id){if(!confirm('Bu məlumatı silmək istəyirsiniz?'))return;db[type]=db[type].filter(x=>x.id!==id);save();render()}
@@ -727,7 +728,12 @@ async function updateBackupStatus(){
 }
 function readBackup(e){let file=e.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();render();alert('Backup bərpa edildi.')}catch{alert('Backup faylı düzgün deyil.')}};r.readAsText(file)}
 function clearAll(){if(confirm('Bütün məlumatlar silinəcək. Əminsiniz?')){db={jobs:[],expenses:[],incomes:[],debts:[],notes:[],customers:[]};save();render()}}
-nav();render();scheduleNoteNotifications();setTimeout(updateBackupStatus,100);setTimeout(initCloud,300);
+async function registerPushServiceWorker(){if(!('serviceWorker' in navigator))return null;try{return await navigator.serviceWorker.register('./sw.js',{scope:'./'})}catch(e){return null}}
+const PUSH_VAPID_PUBLIC_KEY='BFyQ18cCuh0glzwK1KwqqEA4N8VFbfelcgBgSPe6BL5m6cg6cYXLBam05I1pYXHV2icfcWzk86wyf7NPIH-arlA';
+function urlBase64ToUint8Array(x){const p='='.repeat((4-x.length%4)%4),b=(x+p).replace(/-/g,'+').replace(/_/g,'/'),r=atob(b);return Uint8Array.from([...r].map(c=>c.charCodeAt(0)))}
+async function ensureWebPushSubscription(){if(!('serviceWorker'in navigator)||!('PushManager'in window)||!('Notification'in window))return false;const reg=await registerPushServiceWorker();if(!reg)return false;let perm=Notification.permission;if(perm==='default')perm=await Notification.requestPermission();if(perm!=='granted')return false;let sub=await reg.pushManager.getSubscription();if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(PUSH_VAPID_PUBLIC_KEY)});const j=sub.toJSON();db.pushSubscriptions=Array.isArray(db.pushSubscriptions)?db.pushSubscriptions:[];db.pushSubscriptions=db.pushSubscriptions.filter(x=>x&&x.endpoint!==j.endpoint);db.pushSubscriptions.push({endpoint:j.endpoint,keys:j.keys,updatedAt:new Date().toISOString()});save();return true}
+async function initWebPush(){try{await registerPushServiceWorker()}catch(e){}}
+nav();render();scheduleNoteNotifications();initWebPush();setTimeout(updateBackupStatus,100);setTimeout(initCloud,300);
 </script>
 </body>
 </html>
