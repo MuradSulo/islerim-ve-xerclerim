@@ -1,24 +1,13 @@
 {
-  "name": "İşlərim və Xərclərim",
-  "short_name": "İşlərim",
+  "name": "Gəlir və Xərclərim",
+  "short_name": "Gəlir və Xərclərim",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f7fb",
-  "theme_color": "#111827",
-  "lang": "az",
-  "orientation": "portrait",
+  "theme_color": "#4f46e5",
   "icons": [
-    {
-      "src": "icons/icon-180.png",
-      "sizes": "180x180",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    {"src":"apple-touch-icon.png","sizes":"180x180","type":"image/png","purpose":"any maskable"},
+    {"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
   ]
 }
