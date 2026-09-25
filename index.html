@@ -318,11 +318,6 @@ function home(c){
  const aylar=['Yanvar','Fevral','Mart','Aprel','May','İyun','İyul','Avqust','Sentyabr','Oktyabr','Noyabr','Dekabr'];
  const ayAdi=aylar[now.getMonth()]+' '+now.getFullYear();
  c.innerHTML=`<div class="panel" style="background:linear-gradient(135deg,#eef2ff,#faf5ff);border:0"><div style="font-size:13px;color:#6366f1;font-weight:800">📊 İŞLƏRİNİZİN İDARƏETMƏ MƏRKƏZİ</div><div style="font-size:22px;font-weight:800;margin-top:5px">Bugünkü vəziyyətiniz</div><div style="color:#64748b;margin-top:5px">Gəlir, xərc, işlər və borclar bir ekranda.</div></div>
- <div class="cards">
- <div class="card"><small>💰 Ümumi gəlir</small><div class="value green">${money(inc)}</div></div>
- <div class="card"><small>🔧 İş xərci</small><div class="value red">${money(jobCost)}</div></div>
- <div class="card"><small>📈 İşdən xalis qazanc</small><div class="value ${profit>=0?'green':'red'}">${money(profit)}</div></div>
- <div class="card"><small>🧾 Alınacaq pul</small><div class="value orange">${money(recv)}</div></div></div>
  <div class="today-notes panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 style="margin:0">🔔 Bugünkü qeydlər</h2><button class="light" onclick="show('notes')">Bütün qeydlər</button></div>
  ${todayNotes.length?todayNotes.map(x=>`<div class="note-reminder"><b>${esc(x.text)}</b><div class="note-meta">👤 ${esc(x.customer||'Müştəri qeyd edilməyib')} &nbsp; 📞 ${esc(x.phone||'')} &nbsp; 🕒 ${esc(x.time||'Saat yoxdur')}</div></div>`).join(''):'<div class="empty">Bu gün üçün qeyd yoxdur.</div>'}</div>
  <div class="month-report panel"><h2>📅 ${ayAdi} hesabatı</h2><div class="mini">
