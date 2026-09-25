@@ -109,6 +109,7 @@ let backupHandle=null;
 const BACKUP_DB='islerim_backup_handle_v1';
 
 function save(){
+  db.__lastSavedAt=new Date().toISOString();
   localStorage.setItem(KEY,JSON.stringify(db));
   autoBackup();
   queueCloudSync();
@@ -151,10 +152,18 @@ async function loadCloudData(){
     const {data,error}=await supabaseClient.from('app_data').select('data,updated_at').eq('user_id',user.id).maybeSingle();
     if(error) throw error;
     if(data?.data){
-      db=data.data;
-      localStorage.setItem(KEY,JSON.stringify(db));
-      render();
-      setCloudStatus('🟢 Bulud məlumatları yükləndi və sinxronizasiya aktivdir.',true);
+      const cloudDb=data.data;
+      const localSaved=Date.parse(db?.__lastSavedAt||'1970-01-01T00:00:00Z');
+      const cloudSaved=Date.parse(cloudDb?.__lastSavedAt||data.updated_at||'1970-01-01T00:00:00Z');
+      if(localSaved>cloudSaved){
+        // F5/yenidən açılma zamanı daha yeni lokal məlumat köhnə bulud məlumatı ilə əvəzlənməsin.
+        await syncToCloud();
+      }else{
+        db=cloudDb;
+        localStorage.setItem(KEY,JSON.stringify(db));
+        render();
+        setCloudStatus('🟢 Bulud məlumatları yükləndi və sinxronizasiya aktivdir.',true);
+      }
     }else{
       await syncToCloud();
     }
@@ -225,6 +234,7 @@ async function initCloud(){
 }
 
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')loadCloudData();});
+window.addEventListener('pageshow',()=>{setTimeout(()=>loadCloudData(),150);});
 
 async function openBackupDB(){
   return await new Promise((resolve,reject)=>{
@@ -566,12 +576,27 @@ function openJob(id){
 <div class="field"><label>Ödəniş tarixi</label><input type="date" name="paymentDate" value="${today()}"></div><div class="field"><label>Status</label><select name="status">${['Gözləyir','Davam edir','Tamamlandı','Ləğv edildi'].map(s=>`<option ${x.status===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="field"><label>Kateqoriya</label><select name="category" required><option value="">Kateqoriya seçin</option>${(db.jobTypes||[]).map(s=>`<option value="${esc(s)}" ${x.category===s?'selected':''}>${esc(s)}</option>`).join('')}</select></div>
 <div class="field full"><label>Qeyd</label><textarea name="note">${esc(x.note)}</textarea></div></div>${history?`<div style="margin-top:16px"><b>💳 Ödəniş tarixçəsi</b>${history}</div>`:''}<br><button class="primary">Yadda saxla</button></form>`)
 }
+function syncJobDebt(job){
+  if(!Array.isArray(db.debts)) db.debts=[];
+  const amount=Math.max(0,Number(job.amount||0));
+  const paid=Math.min(amount,Math.max(0,Number(job.paid||0)));
+  const existing=db.debts.find(d=>d.jobId===job.id && d.autoFromJob);
+  if(amount<=0) { if(existing) db.debts=db.debts.filter(d=>d!==existing); return; }
+  const person=(job.customer||'Müştəri qeyd edilməyib').trim();
+  const note='İş: '+(job.name||'İş');
+  if(existing){
+    existing.type='receive'; existing.person=person; existing.amount=amount; existing.paid=paid; existing.date=job.date||today(); existing.note=note;
+  } else if(amount>paid){
+    db.debts.push({id:'job-debt-'+job.id,jobId:job.id,autoFromJob:true,date:job.date||today(),person,type:'receive',amount,paid,note,due:''});
+  }
+}
 function saveJob(e,id){
  e.preventDefault(); let f=new FormData(e.target),o=Object.fromEntries(f); o.id=id||Date.now().toString(); o.amount=+o.amount; o.cost=+o.cost||0;
  let i=db.jobs.findIndex(x=>x.id===o.id), old=i>=0?db.jobs[i]:null; o.paid=old?Number(old.paid||0):0; o.payments=old&&Array.isArray(old.payments)?old.payments.slice():[];
  const np=Number(o.newPayment||0); if(!old && Number(f.get('paid')||0)>0 && !np){ const initial=Number(f.get('paid')); o.paid=initial; o.payments.push({id:'pay-'+Date.now(),date:o.date||today(),amount:initial,note:'İlkin ödəniş'}); }
  if(np>0){ if(np>Math.max(0,Number(o.amount)-Number(o.paid))){alert('Yeni ödəniş işin qalan məbləğindən çox ola bilməz.');return;} o.payments.push({id:'pay-'+Date.now(),date:f.get('paymentDate')||today(),amount:np,note:'Ödəniş'}); o.paid=Number(o.paid)+np; }
- delete o.newPayment; delete o.paymentDate; o.created=old?.created||new Date().toISOString(); if(i>=0)db.jobs[i]=o;else db.jobs.push(o); save();closeModal();render()
+ delete o.newPayment; delete o.paymentDate; o.created=old?.created||new Date().toISOString(); if(i>=0)db.jobs[i]=o;else db.jobs.push(o);
+ syncJobDebt(o); save();closeModal();render()
 }
 const cats=['Yanacaq','Yemək','Yol','Material','Avadanlıq','Mağaza','Telefon/İnternet','Kommunal','Şəxsi','Digər'];
 function openExpense(id){let x=db.expenses.find(a=>a.id===id)||{};modal(id?'Xərci redaktə et':'Yeni xərc',`<form onsubmit="saveExpense(event,'${id||''}')"><div class="formgrid"><div class="field"><label>Tarix</label><input type="date" name="date" value="${x.date||today()}"></div><div class="field"><label>Kateqoriya</label><select name="category">${cats.map(s=>`<option ${x.category===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="field"><label>Məbləğ (₼)</label><input type="number" step="0.01" name="amount" required value="${x.amount??''}"></div><div class="field"><label>Qeyd</label><input name="note" value="${esc(x.note)}"></div></div><br><button class="primary">Yadda saxla</button></form>`)}
