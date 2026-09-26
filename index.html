@@ -936,5 +936,27 @@ function updateTopAdd(){
 }
 </script>
 
+
+<script id="initial-home-render-fix">
+(function(){
+  function ensureHomeRendered(){
+    try{
+      const content=document.getElementById('content');
+      if(!content || typeof render!=='function') return;
+      if(typeof current==='string' && current==='home'){
+        render();
+        if(typeof updateMobilePlus==='function') updateMobilePlus();
+        if(typeof updateTopAdd==='function') updateTopAdd();
+      }
+    }catch(e){}
+  }
+  function start(){
+    [0,150,400,900,1600,3000].forEach(ms=>setTimeout(ensureHomeRendered,ms));
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start);
+  else start();
+})();
+</script>
+
 </body>
 </html>
