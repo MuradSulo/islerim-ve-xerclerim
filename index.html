@@ -182,6 +182,8 @@ function save(){
   localStorage.setItem(KEY,JSON.stringify(db));
   autoBackup();
   queueCloudSync();
+
+  try{ if(typeof syncToCloud==='function') syncToCloud(); }catch(e){ console.warn('Auto sync:',e); }
 }
 
 async function getCloudUser(){
@@ -955,6 +957,26 @@ function updateTopAdd(){
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start);
   else start();
+})();
+</script>
+
+
+<script id="auto-sync-final">
+(function(){
+  let timer;
+  window.autoSyncNow=function(){
+    clearTimeout(timer);
+    timer=setTimeout(async function(){
+      try{
+        if(typeof syncToCloud==='function') await syncToCloud();
+        else if(typeof saveToCloud==='function') await saveToCloud();
+        else if(typeof cloudSave==='function') await cloudSave();
+      }catch(e){console.warn('Auto sync failed',e);}
+    },300);
+  };
+  window.addEventListener('load',()=>setTimeout(window.autoSyncNow,1000));
+  window.addEventListener('online',()=>setTimeout(window.autoSyncNow,500));
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(window.autoSyncNow,500);});
 })();
 </script>
 
