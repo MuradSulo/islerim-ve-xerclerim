@@ -396,7 +396,7 @@ function home(c){
  const now=new Date(), ms=localISODate(new Date(now.getFullYear(),now.getMonth(),1)), me=localISODate(now);
  const mj=db.jobs.filter(x=>inReportRange(x.date,ms,me)), mi=db.incomes.filter(x=>inReportRange(x.date,ms,me)), mep=db.expenses.filter(x=>inReportRange(x.date,ms,me));
  const mIncome=sum(mj,x=>x.amount)+sum(mi,x=>x.amount), mCost=sum(mj,x=>x.cost), mNet=mIncome-mCost, mSeparate=sum(mep,x=>x.amount);
- const todayNotes=(db.notes||[]).filter(x=>x.date===today()).slice().sort((a,b)=>String(a.time||'').localeCompare(String(b.time||'')));
+ const todayNotes=(db.notes||[]).filter(x=>x.date===today() && !x.done).slice().sort((a,b)=>String(a.time||'').localeCompare(String(b.time||'')));
  const aylar=['Yanvar','Fevral','Mart','Aprel','May','İyun','İyul','Avqust','Sentyabr','Oktyabr','Noyabr','Dekabr'];
  const ayAdi=aylar[now.getMonth()]+' '+now.getFullYear();
  c.innerHTML=`<div class="panel" style="background:linear-gradient(135deg,#eef2ff,#faf5ff);border:0"><div style="font-size:13px;color:#6366f1;font-weight:800">📊 İŞLƏRİNİZİN İDARƏETMƏ MƏRKƏZİ</div><div style="font-size:22px;font-weight:800;margin-top:5px">Bugünkü vəziyyətiniz</div><div style="color:#64748b;margin-top:5px">Gəlir, xərc, işlər və borclar bir ekranda.</div></div>
@@ -460,9 +460,16 @@ function openCustomerByName(name){
  const payments=a.jobs.flatMap(j=>(j.payments||[]).map(p=>({...p,jobName:j.name}))).sort((x,y)=>(y.date||'').localeCompare(x.date||''));
  modal('👤 '+esc(a.name),`<div class="customer-detail"><div class="customer-contact">📞 ${a.phone?`<a href="tel:${esc(a.phone)}">${esc(a.phone)}</a>`:'Telefon qeyd edilməyib'}</div><div class="customer-summary"><div><small>İş sayı</small><b>${a.jobs.length}</b></div><div><small>Ümumi</small><b>${money(total)}</b></div><div><small>Ödənilib</small><b class="green">${money(paid)}</b></div><div><small>Qalan</small><b class="${remain>0?'orange':'green'}">${money(remain)}</b></div></div><h3>🛠️ İşlər</h3>${rows||'<div class="empty">İş yoxdur.</div>'}<h3 style="margin-top:18px">💳 Ödəniş tarixçəsi</h3>${payments.length?payments.map(p=>`<div class="payment-row"><span>📅 ${fmt(p.date)} · ${esc(p.jobName)}</span><b class="green">+ ${money(p.amount)}</b></div>`).join(''):'<div class="empty">Ödəniş tarixçəsi yoxdur.</div>'}</div>`);
 }
+let noteFilterMode='active';
 function notes(c){
- let arr=(db.notes||[]).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b.time||'').localeCompare(a.time||''));
- c.innerHTML=`<div class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><h2 style="margin:0">🔔 Qeydlər və xatırlatmalar</h2><div style="color:var(--muted);font-size:13px;margin-top:5px">Müştəri, telefon, tarix və saat yazın. Vaxt çatanda bildiriş göstəriləcək.</div></div><button class="primary" onclick="openNote()">+ Qeyd əlavə et</button></div><div style="margin-top:15px">${arr.map(x=>`<div class="note-reminder"><div><label><input type="checkbox" ${x.done?'checked':''} onchange="toggleNote('${x.id}')"> <b>${esc(x.text)}</b></label><button class="light" style="float:right;margin-right:6px" onclick="openNote('${x.id}')">✏️</button><button class="danger" style="float:right" onclick="del('notes','${x.id}')">🗑️</button></div><div class="note-meta">👤 ${esc(x.customer||'Müştəri yoxdur')} &nbsp; 📞 ${esc(x.phone||'Telefon yoxdur')} &nbsp; 📅 ${fmt(x.date)} ${x.time?'· 🕒 '+esc(x.time):''}</div></div>`).join('')||'<div class="empty">Qeyd yoxdur.</div>'}</div></div>`;
+ const all=(db.notes||[]).slice();
+ const tomorrow=localISODate(new Date(Date.now()+86400000));
+ let arr=all;
+ if(noteFilterMode==='today') arr=all.filter(x=>x.date===today() && !x.done);
+ else if(noteFilterMode==='tomorrow') arr=all.filter(x=>x.date===tomorrow && !x.done);
+ else if(noteFilterMode==='active') arr=all.filter(x=>!x.done);
+ arr=arr.slice().sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.time||'').localeCompare(b.time||''));
+ c.innerHTML=`<div class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><h2 style="margin:0">🔔 Qeydlər və xatırlatmalar</h2><div style="color:var(--muted);font-size:13px;margin-top:5px">Müştəri, telefon, tarix və saat yazın. Tamamlanan qeyd gün siyahısından gizlənir.</div></div><button class="primary" onclick="openNote()">+ Qeyd əlavə et</button></div><div class="toolbar" style="margin-top:15px"><button class="light" onclick="noteFilterMode='today';render()">📅 Bu gün</button><button class="light" onclick="noteFilterMode='tomorrow';render()">➡️ Sabah</button><button class="light" onclick="noteFilterMode='active';render()">🟢 Aktiv qeydlər</button><button class="light" onclick="noteFilterMode='all';render()">📋 Bütün qeydlər</button></div><div style="margin-top:15px">${arr.map(x=>`<div class="note-reminder" style="${x.done?'opacity:.65':''}"><div><label><input type="checkbox" ${x.done?'checked':''} onchange="toggleNote('${x.id}')"> <b>${esc(x.text)}</b></label><button class="light" style="float:right;margin-right:6px" onclick="openNote('${x.id}')">✏️</button><button class="danger" style="float:right" onclick="del('notes','${x.id}')">🗑️</button></div><div class="note-meta">👤 ${esc(x.customer||'Müştəri yoxdur')} &nbsp; 📞 ${esc(x.phone||'Telefon yoxdur')} &nbsp; 📅 ${fmt(x.date)} ${x.time?'· 🕒 '+esc(x.time):''} ${x.done?' · ✅ Tamamlandı':' · ⏳ Tamamlanmayıb'}</div></div>`).join('')||'<div class="empty">Bu seçimdə qeyd yoxdur.</div>'}</div></div>`;
 }
 
 function personalExpenses(c){
@@ -767,7 +774,7 @@ function openNote(id){
 }
 async function saveNote(e,id){e.preventDefault();let o=Object.fromEntries(new FormData(e.target));o.id=id||'note-'+Date.now();o.done=id?(db.notes.find(x=>x.id===id)?.done||false):false;o.tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Baku';let i=(db.notes||[]).findIndex(x=>x.id===o.id);if(i>=0){o.notifiedAt=db.notes[i].notifiedAt||null;db.notes[i]=o}else{db.notes.push(o)}save();requestNotificationPermission();try{await ensureWebPushSubscription()}catch(e){}scheduleNoteNotifications();closeModal();render()}
 function toggleNote(id){let x=db.notes.find(a=>a.id===id);if(x)x.done=!x.done;save();render()}
-function toggleNote(id){let x=db.notes.find(a=>a.id===id);if(x)x.done=!x.done;save();render()}
+
 function del(type,id){if(!confirm('Bu məlumatı silmək istəyirsiniz?'))return;db[type]=db[type].filter(x=>x.id!==id);save();render()}
 async function requestNotificationPermission(){
  if(!('Notification' in window))return;
