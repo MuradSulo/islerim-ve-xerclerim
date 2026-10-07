@@ -411,10 +411,9 @@ function home(c){
  const aylar=['Yanvar','Fevral','Mart','Aprel','May','İyun','İyul','Avqust','Sentyabr','Oktyabr','Noyabr','Dekabr'], ayAdi=aylar[now.getMonth()]+' '+now.getFullYear();
  const notePreview=todayNotes.slice(0,3);
  c.innerHTML=`
- <div class="home-hero">
-   <div class="home-hero-icon"><span>▮</span><span>▮</span><span>▮</span></div>
-   <div class="home-hero-text"><div class="home-eyebrow">İŞLƏRİNİZİN İDARƏETMƏ MƏRKƏZİ</div><div class="home-hero-title">Bugünkü vəziyyətiniz</div><div class="home-hero-sub">Gəlir, xərc, işlər və borclar bir ekranda.</div></div>
-   <button class="home-refresh" onclick="refreshApp()">↻</button>
+ <div class="home-notes panel">
+   <div class="home-section-head"><h2>🔔 Bugünkü qeydlər</h2><button class="home-link-btn" onclick="show('notes')">Bütün qeydlər <span>›</span></button></div>
+   ${notePreview.length?notePreview.map(x=>`<div class="home-note-row" onclick="show('notes')"><div class="note-accent"></div><div class="note-row-text">${esc(x.text)}</div><div class="note-chevron">›</div></div>`).join(''):'<div class="home-empty">Bu gün üçün tamamlanmamış qeyd yoxdur.</div>'}
  </div>
  <div class="home-balance-grid">
    <div class="home-balance-card cash-card"><div class="balance-icon">💵</div><div><div class="balance-label">Cibdə qalan</div><div class="balance-value">${money(cash)}</div></div><div class="balance-arrow">›</div></div>
@@ -427,10 +426,6 @@ function home(c){
    <div class="income-card income-month"><div class="income-icon">🗓️</div><div class="income-label">Bu ay gəlir</div><div class="income-value">${money(mIncome)}</div></div>
    <div class="income-card income-net"><div class="income-icon">💰</div><div class="income-label">Bu gün xalis qazanc</div><div class="income-value">${money(dNet)}</div></div>
    <div class="income-card income-net-week"><div class="income-icon">📈</div><div class="income-label">Bu həftə xalis qazanc</div><div class="income-value">${money(wNet)}</div></div>
- </div>
- <div class="home-notes panel">
-   <div class="home-section-head"><h2>🔔 Bugünkü qeydlər</h2><button class="home-link-btn" onclick="show('notes')">Bütün qeydlər <span>›</span></button></div>
-   ${notePreview.length?notePreview.map(x=>`<div class="home-note-row" onclick="show('notes')"><div class="note-accent"></div><div class="note-row-text">${esc(x.text)}</div><div class="note-chevron">›</div></div>`).join(''):'<div class="home-empty">Bu gün üçün tamamlanmamış qeyd yoxdur.</div>'}
  </div>
  <div class="home-month panel">
    <div class="home-section-head"><h2>📅 ${ayAdi} hesabatı</h2><button class="home-round-btn" onclick="show('reports')">›</button></div>
