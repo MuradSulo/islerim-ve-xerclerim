@@ -96,6 +96,7 @@ h1,h2,h3{letter-spacing:-.02em}
  }
  button,.btn,.primary,.secondary{min-height:44px}
 }
+.home-income-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:18px}.income-card{min-height:126px}.income-month-net{background:linear-gradient(135deg,#f3efff,#eee7ff)}@media(max-width:700px){.home-income-grid{grid-template-columns:repeat(2,1fr);gap:10px}.income-card{min-height:118px;padding:14px}.income-label{font-size:14px}.income-value{font-size:25px}}
 </style>
 
 
@@ -155,7 +156,11 @@ if(!db) {
   db.personalIncomes=db.personalIncomes||[];
   db.jobTypes=db.jobTypes||[];
   db.personalCategories=db.personalCategories||[];
+  db.transfers=db.transfers||[];
+  db.balanceSettings=db.balanceSettings||{cash:0,card:0};
 }
+if(!db.transfers) db.transfers=[];
+if(!db.balanceSettings) db.balanceSettings={cash:0,card:0};
 const DEFAULT_JOB_TYPES=['Kamera','Sığorta','İnternet','Krosna','Çap işləri','Dəvətnamə','Digər gəlir'];
 const existingJobTypes=(db.jobs||[]).map(x=>String(x.category||'').trim()).filter(Boolean);
 db.jobTypes=[...new Set([...(db.jobTypes||[]),...DEFAULT_JOB_TYPES,...existingJobTypes])];
@@ -398,7 +403,7 @@ function render(){
 function payMethod(v){return v==='card'?'card':'cash'}
 function allIncomeRows(){return (db.jobs||[]).map(x=>({date:x.date,amount:Number(x.amount||0),paymentMethod:payMethod(x.paymentMethod)})).concat((db.incomes||[]).map(x=>({date:x.date,amount:Number(x.amount||0),paymentMethod:payMethod(x.paymentMethod)})),(db.personalIncomes||[]).map(x=>({date:x.date,amount:Number(x.amount||0),paymentMethod:payMethod(x.paymentMethod)})))}
 function allExpenseRows(){return (db.expenses||[]).map(x=>({date:x.date,amount:Number(x.amount||0),paymentMethod:payMethod(x.paymentMethod)})).concat((db.personalExpenses||[]).map(x=>({date:x.date,amount:Number(x.amount||0),paymentMethod:payMethod(x.paymentMethod)})))}
-function balanceByMethod(method){return sum(allIncomeRows().filter(x=>x.paymentMethod===method),x=>x.amount)-sum(allExpenseRows().filter(x=>x.paymentMethod===method),x=>x.amount)}
+function balanceByMethod(method){const base=Number(db.balanceSettings?.[method]||0); const inc=sum(allIncomeRows().filter(x=>x.paymentMethod===method),x=>x.amount); const out=sum(allExpenseRows().filter(x=>x.paymentMethod===method),x=>x.amount); const tin=sum((db.transfers||[]).filter(x=>x.to===method),x=>Number(x.amount||0)); const tout=sum((db.transfers||[]).filter(x=>x.from===method),x=>Number(x.amount||0)); return base+inc-out+tin-tout}
 function incomeInRange(start,end){return sum(allIncomeRows().filter(x=>String(x.date||'')>=start&&String(x.date||'')<=end),x=>x.amount)}
 function paymentSelect(value){return `<div class="field"><label>Ödəniş üsulu</label><select name="paymentMethod"><option value="cash" ${payMethod(value)==='cash'?'selected':''}>💵 Cib / Nağd</option><option value="card" ${payMethod(value)==='card'?'selected':''}>💳 Kart</option></select></div>`}
 function home(c){
@@ -422,10 +427,11 @@ function home(c){
  </div>
  <div class="home-income-grid">
    <div class="income-card income-today"><div class="income-icon">☀️</div><div class="income-label">Bu gün gəlir</div><div class="income-value">${money(dIncome)}</div></div>
+   <div class="income-card income-net"><div class="income-icon">💰</div><div class="income-label">Bu gün xalis gəlir</div><div class="income-value">${money(dNet)}</div></div>
    <div class="income-card income-week"><div class="income-icon">📅</div><div class="income-label">Bu həftə gəlir</div><div class="income-value">${money(wIncome)}</div></div>
+   <div class="income-card income-net-week"><div class="income-icon">📈</div><div class="income-label">Bu həftə xalis gəlir</div><div class="income-value">${money(wNet)}</div></div>
    <div class="income-card income-month"><div class="income-icon">🗓️</div><div class="income-label">Bu ay gəlir</div><div class="income-value">${money(mIncome)}</div></div>
-   <div class="income-card income-net"><div class="income-icon">💰</div><div class="income-label">Bu gün xalis qazanc</div><div class="income-value">${money(dNet)}</div></div>
-   <div class="income-card income-net-week"><div class="income-icon">📈</div><div class="income-label">Bu həftə xalis qazanc</div><div class="income-value">${money(wNet)}</div></div>
+   <div class="income-card income-month-net"><div class="income-icon">💎</div><div class="income-label">Bu ay xalis gəlir</div><div class="income-value">${money(mNet)}</div></div>
  </div>
  <div class="home-month panel">
    <div class="home-section-head"><h2>📅 ${ayAdi} hesabatı</h2><button class="home-round-btn" onclick="show('reports')">›</button></div>
@@ -733,7 +739,19 @@ function settings(c){c.innerHTML=`<div class="panel"><h2>⚙️ Ayarlar</h2>
 <button class="primary" onclick="chooseBackupFile()">Backup faylını seç / dəyiş</button>
 <button class="light" onclick="writeBackupFile()">İndi backup et</button>
 </div>
+<div style="padding:14px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;margin-bottom:15px">
+<h3 style="margin:0 0 8px">💰 Cib və Kart balansı</h3>
+<p style="margin:0 0 10px;color:var(--muted)">İzləməyə başladığınız andakı real məbləği yazın.</p>
+<div class="formgrid">
+<div class="field"><label>Başlanğıc cib pulu (₼)</label><input id="baseCash" type="number" step="0.01" value="${Number(db.balanceSettings?.cash||0)}"></div>
+<div class="field"><label>Başlanğıc kart pulu (₼)</label><input id="baseCard" type="number" step="0.01" value="${Number(db.balanceSettings?.card||0)}"></div>
+</div><br><button class="primary" onclick="saveBalanceSettings()">💾 Balansları yadda saxla</button>
+<button class="light" onclick="openTransfer()">↔️ Cib ↔ Kart köçürmə</button>
+</div>
 <p>Bu proqram məlumatları brauzerin yaddaşında saxlayır. Səhifəni bağlasanız da məlumatlar qalır.</p><button class="light" onclick="exportData()">💾 Backup çıxar</button> <button class="light" onclick="importData()">📥 Backup bərpa et</button> <button class="danger" onclick="clearAll()">Bütün məlumatları sil</button><input id="file" type="file" accept=".json" style="display:none" onchange="readBackup(event)"></div>`}
+function saveBalanceSettings(){const c=Number(document.getElementById('baseCash')?.value||0), k=Number(document.getElementById('baseCard')?.value||0); db.balanceSettings={cash:c,card:k}; save(); render(); alert('Cib və kart başlanğıc balansları yadda saxlanıldı.')}
+function openTransfer(){modal('Cib ↔ Kart köçürmə',`<form onsubmit="saveTransfer(event)"><div class="formgrid"><div class="field"><label>İstiqamət</label><select name="direction"><option value="cash-card">💵 Cibdən → 💳 Karta</option><option value="card-cash">💳 Kartdan → 💵 Cibə</option></select></div><div class="field"><label>Məbləğ (₼)</label><input type="number" step="0.01" min="0.01" name="amount" required></div><div class="field"><label>Tarix</label><input type="date" name="date" value="${today()}"></div><div class="field full"><label>Qeyd</label><input name="note" placeholder="Məs: Banka yatırıldı"></div></div><br><button class="primary">Yadda saxla</button></form>`)}
+function saveTransfer(e){e.preventDefault();const f=Object.fromEntries(new FormData(e.target)), [from,to]=f.direction.split('-'); const amount=Number(f.amount||0); if(!amount)return; db.transfers=db.transfers||[]; db.transfers.push({id:'tr-'+Date.now(),date:f.date||today(),from,to,amount,note:(f.note||'').trim()}); save(); closeModal(); render()}
 function modal(title,body){document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=body;document.getElementById('modal').classList.add('show')}
 function closeModal(){document.getElementById('modal').classList.remove('show')}
 function openJob(id){
@@ -856,7 +874,7 @@ async function updateBackupStatus(){
   el.textContent=h?'🟢 Avtomatik backup aktivdir — seçilmiş fayl hər əməliyyatdan sonra yenilənir.':'🔴 Avtomatik backup faylı seçilməyib.';
 }
 function readBackup(e){let file=e.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();render();alert('Backup bərpa edildi.')}catch{alert('Backup faylı düzgün deyil.')}};r.readAsText(file)}
-function clearAll(){if(confirm('Bütün məlumatlar silinəcək. Əminsiniz?')){db={jobs:[],expenses:[],incomes:[],debts:[],notes:[],customers:[]};save();render()}}
+function clearAll(){if(confirm('Bütün məlumatlar silinəcək. Əminsiniz?')){db={jobs:[],expenses:[],incomes:[],debts:[],notes:[],customers:[],personalExpenses:[],personalIncomes:[],transfers:[],balanceSettings:{cash:0,card:0},jobTypes:[],personalCategories:[]};save();render()}}
 async function registerPushServiceWorker(){if(!('serviceWorker' in navigator))return null;try{return await navigator.serviceWorker.register('./sw.js',{scope:'./'})}catch(e){return null}}
 const PUSH_VAPID_PUBLIC_KEY='BEmxlmPWuBtbtt7GHu8E8zGDfJfct7gmj47aiC4SQn_zw5X0GUqb-xXbed7stb7sw18FnumkUVhMG2mLPVIocP4';
 function urlBase64ToUint8Array(x){const p='='.repeat((4-x.length%4)%4),b=(x+p).replace(/-/g,'+').replace(/_/g,'/'),r=atob(b);return Uint8Array.from([...r].map(c=>c.charCodeAt(0)))}
