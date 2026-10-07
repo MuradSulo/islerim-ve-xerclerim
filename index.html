@@ -157,10 +157,11 @@ if(!db) {
   db.jobTypes=db.jobTypes||[];
   db.personalCategories=db.personalCategories||[];
   db.transfers=db.transfers||[];
-  db.balanceSettings=db.balanceSettings||{cash:0,card:0};
+  db.balanceSettings=db.balanceSettings||{cash:0,card:0,startDate:''};
 }
 if(!db.transfers) db.transfers=[];
-if(!db.balanceSettings) db.balanceSettings={cash:0,card:0};
+if(!db.balanceSettings) db.balanceSettings={cash:0,card:0,startDate:''};
+if(db.balanceSettings.startDate===undefined) db.balanceSettings.startDate='';
 const DEFAULT_JOB_TYPES=['Kamera','Sığorta','İnternet','Krosna','Çap işləri','Dəvətnamə','Digər gəlir'];
 const existingJobTypes=(db.jobs||[]).map(x=>String(x.category||'').trim()).filter(Boolean);
 db.jobTypes=[...new Set([...(db.jobTypes||[]),...DEFAULT_JOB_TYPES,...existingJobTypes])];
@@ -403,7 +404,7 @@ function render(){
 function payMethod(v){return v==='card'?'card':'cash'}
 function allIncomeRows(){return (db.jobs||[]).map(x=>({date:x.date,amount:Number(x.amount||0),paymentMethod:payMethod(x.paymentMethod)})).concat((db.incomes||[]).map(x=>({date:x.date,amount:Number(x.amount||0),paymentMethod:payMethod(x.paymentMethod)})),(db.personalIncomes||[]).map(x=>({date:x.date,amount:Number(x.amount||0),paymentMethod:payMethod(x.paymentMethod)})))}
 function allExpenseRows(){return (db.expenses||[]).map(x=>({date:x.date,amount:Number(x.amount||0),paymentMethod:payMethod(x.paymentMethod)})).concat((db.personalExpenses||[]).map(x=>({date:x.date,amount:Number(x.amount||0),paymentMethod:payMethod(x.paymentMethod)})))}
-function balanceByMethod(method){const base=Number(db.balanceSettings?.[method]||0); const inc=sum(allIncomeRows().filter(x=>x.paymentMethod===method),x=>x.amount); const out=sum(allExpenseRows().filter(x=>x.paymentMethod===method),x=>x.amount); const tin=sum((db.transfers||[]).filter(x=>x.to===method),x=>Number(x.amount||0)); const tout=sum((db.transfers||[]).filter(x=>x.from===method),x=>Number(x.amount||0)); return base+inc-out+tin-tout}
+function balanceByMethod(method){const base=Number(db.balanceSettings?.[method]||0); const start=String(db.balanceSettings?.startDate||''); const inRange=x=>!start||String(x.date||'')>=start; const inc=sum(allIncomeRows().filter(x=>x.paymentMethod===method&&inRange(x)),x=>x.amount); const out=sum(allExpenseRows().filter(x=>x.paymentMethod===method&&inRange(x)),x=>x.amount); const tin=sum((db.transfers||[]).filter(x=>x.to===method&&inRange(x)),x=>Number(x.amount||0)); const tout=sum((db.transfers||[]).filter(x=>x.from===method&&inRange(x)),x=>Number(x.amount||0)); return base+inc-out+tin-tout}
 function incomeInRange(start,end){return sum(allIncomeRows().filter(x=>String(x.date||'')>=start&&String(x.date||'')<=end),x=>x.amount)}
 function paymentSelect(value){return `<div class="field"><label>Ödəniş üsulu</label><select name="paymentMethod"><option value="cash" ${payMethod(value)==='cash'?'selected':''}>💵 Cib / Nağd</option><option value="card" ${payMethod(value)==='card'?'selected':''}>💳 Kart</option></select></div>`}
 function home(c){
@@ -745,11 +746,12 @@ function settings(c){c.innerHTML=`<div class="panel"><h2>⚙️ Ayarlar</h2>
 <div class="formgrid">
 <div class="field"><label>Başlanğıc cib pulu (₼)</label><input id="baseCash" type="number" step="0.01" value="${Number(db.balanceSettings?.cash||0)}"></div>
 <div class="field"><label>Başlanğıc kart pulu (₼)</label><input id="baseCard" type="number" step="0.01" value="${Number(db.balanceSettings?.card||0)}"></div>
+<div class="field"><label>Hesablanma başlanğıc tarixi</label><input id="balanceStartDate" type="date" value="${db.balanceSettings?.startDate||today()}"></div>
 </div><br><button class="primary" onclick="saveBalanceSettings()">💾 Balansları yadda saxla</button>
 <button class="light" onclick="openTransfer()">↔️ Cib ↔ Kart köçürmə</button>
 </div>
 <p>Bu proqram məlumatları brauzerin yaddaşında saxlayır. Səhifəni bağlasanız da məlumatlar qalır.</p><button class="light" onclick="exportData()">💾 Backup çıxar</button> <button class="light" onclick="importData()">📥 Backup bərpa et</button> <button class="danger" onclick="clearAll()">Bütün məlumatları sil</button><input id="file" type="file" accept=".json" style="display:none" onchange="readBackup(event)"></div>`}
-function saveBalanceSettings(){const c=Number(document.getElementById('baseCash')?.value||0), k=Number(document.getElementById('baseCard')?.value||0); db.balanceSettings={cash:c,card:k}; save(); render(); alert('Cib və kart başlanğıc balansları yadda saxlanıldı.')}
+function saveBalanceSettings(){const c=Number(document.getElementById('baseCash')?.value||0), k=Number(document.getElementById('baseCard')?.value||0), d=document.getElementById('balanceStartDate')?.value||today(); db.balanceSettings={cash:c,card:k,startDate:d}; save(); render(); alert('Cib və kart başlanğıc balansları yadda saxlanıldı. Bu tarixdən əvvəlki köhnə əməliyyatlar balans hesabına daxil edilməyəcək.')}
 function openTransfer(){modal('Cib ↔ Kart köçürmə',`<form onsubmit="saveTransfer(event)"><div class="formgrid"><div class="field"><label>İstiqamət</label><select name="direction"><option value="cash-card">💵 Cibdən → 💳 Karta</option><option value="card-cash">💳 Kartdan → 💵 Cibə</option></select></div><div class="field"><label>Məbləğ (₼)</label><input type="number" step="0.01" min="0.01" name="amount" required></div><div class="field"><label>Tarix</label><input type="date" name="date" value="${today()}"></div><div class="field full"><label>Qeyd</label><input name="note" placeholder="Məs: Banka yatırıldı"></div></div><br><button class="primary">Yadda saxla</button></form>`)}
 function saveTransfer(e){e.preventDefault();const f=Object.fromEntries(new FormData(e.target)), [from,to]=f.direction.split('-'); const amount=Number(f.amount||0); if(!amount)return; db.transfers=db.transfers||[]; db.transfers.push({id:'tr-'+Date.now(),date:f.date||today(),from,to,amount,note:(f.note||'').trim()}); save(); closeModal(); render()}
 function modal(title,body){document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=body;document.getElementById('modal').classList.add('show')}
@@ -874,7 +876,7 @@ async function updateBackupStatus(){
   el.textContent=h?'🟢 Avtomatik backup aktivdir — seçilmiş fayl hər əməliyyatdan sonra yenilənir.':'🔴 Avtomatik backup faylı seçilməyib.';
 }
 function readBackup(e){let file=e.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();render();alert('Backup bərpa edildi.')}catch{alert('Backup faylı düzgün deyil.')}};r.readAsText(file)}
-function clearAll(){if(confirm('Bütün məlumatlar silinəcək. Əminsiniz?')){db={jobs:[],expenses:[],incomes:[],debts:[],notes:[],customers:[],personalExpenses:[],personalIncomes:[],transfers:[],balanceSettings:{cash:0,card:0},jobTypes:[],personalCategories:[]};save();render()}}
+function clearAll(){if(confirm('Bütün məlumatlar silinəcək. Əminsiniz?')){db={jobs:[],expenses:[],incomes:[],debts:[],notes:[],customers:[],personalExpenses:[],personalIncomes:[],transfers:[],balanceSettings:{cash:0,card:0,startDate:''},jobTypes:[],personalCategories:[]};save();render()}}
 async function registerPushServiceWorker(){if(!('serviceWorker' in navigator))return null;try{return await navigator.serviceWorker.register('./sw.js',{scope:'./'})}catch(e){return null}}
 const PUSH_VAPID_PUBLIC_KEY='BEmxlmPWuBtbtt7GHu8E8zGDfJfct7gmj47aiC4SQn_zw5X0GUqb-xXbed7stb7sw18FnumkUVhMG2mLPVIocP4';
 function urlBase64ToUint8Array(x){const p='='.repeat((4-x.length%4)%4),b=(x+p).replace(/-/g,'+').replace(/_/g,'/'),r=atob(b);return Uint8Array.from([...r].map(c=>c.charCodeAt(0)))}
